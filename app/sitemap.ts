@@ -11,7 +11,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/current-timestamp-milliseconds',
     '/timestamp-to-date',
     '/date-to-timestamp',
-    '/about-unix-time'
+    '/about-unix-time',
+    '/epoch-converter',
+    '/utc-time-now',
+    '/iso-8601-converter',
+    '/javascript-timestamp',
+    '/python-timestamp',
+    '/mysql-unix-timestamp',
+    '/unix-time-in-milliseconds',
+    '/timestamp-cheatsheet'
   ];
 
   return routes.map((route) => ({
