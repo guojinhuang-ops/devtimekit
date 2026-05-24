@@ -1,4 +1,4 @@
-﻿import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import {
   Binary,
   Braces,
@@ -177,7 +177,7 @@ export function getMenuSections(locale: LanguageCode): Record<NavCategoryKey, Na
       {
         title: t(locale, 'popular'),
         items: [
-          { title: 'MD5 Generator', href: '/md5-generator', description: 'MD5 32/16 with upper and lower output.', icon: Fingerprint },
+          { title: 'MD5 Generator', href: '/md5-generator', description: 'MD5 128-bit/64-bit and 32/16 with upper/lower output.', icon: Fingerprint },
           { title: 'SHA1 Generator', href: '/sha1-generator', description: 'Generate SHA1 digest in real time.', icon: Hash },
           { title: 'SHA256 Generator', href: '/sha256-generator', description: 'Generate SHA256 digest in real time.', icon: Shield },
           { title: 'SHA512 Generator', href: '/sha512-generator', description: 'Generate SHA512 digest in real time.', icon: Binary }

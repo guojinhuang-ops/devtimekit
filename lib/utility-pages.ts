@@ -489,8 +489,8 @@ export const utilityPages: Record<string, UtilityPage> = {
   '/md5-generator': {
     title: 'MD5 Generator',
     path: '/md5-generator',
-    description: 'Generate MD5 hashes online with 32/16, uppercase/lowercase output in real time.',
-    keywords: ['md5 generator', 'md5 hash', 'md5 16', 'md5 32'],
+    description: 'Generate MD5 hashes online with 128-bit/64-bit and 32/16 uppercase/lowercase output in real time.',
+    keywords: ['md5 generator', 'md5 hash', 'md5 64 bit', 'md5 128 bit', 'md5 16', 'md5 32'],
     kind: 'md5-generator',
     definition: [
       'MD5 is a hash function, not encryption. It transforms text into a fixed-length digest and is not designed to be reversed back into original text.',
@@ -499,7 +499,7 @@ export const utilityPages: Record<string, UtilityPage> = {
     ],
     steps: [
       'Enter any text, including UTF-8, emoji, and Chinese characters.',
-      'Read MD5 32 lower/upper and MD5 16 lower/upper output instantly.',
+      'Read MD5 128-bit/64-bit and MD5 32/16 lower/upper output instantly.',
       'Copy the hash format required by your workflow.'
     ],
     examples: [
@@ -515,7 +515,7 @@ export const utilityPages: Record<string, UtilityPage> = {
     faq: [
       { q: 'Is MD5 encryption?', a: 'No. MD5 is a one-way hash function, not an encryption algorithm.' },
       { q: 'Should MD5 be used for passwords?', a: 'No. Use modern password hashing algorithms such as Argon2, bcrypt, or scrypt.' },
-      { q: 'Why provide MD5 16 and MD5 32?', a: 'MD5 32 is the full hex digest. MD5 16 is a shortened representation used by some legacy systems.' }
+      { q: 'Why provide MD5 64-bit/128-bit and MD5 16/32?', a: 'MD5 128-bit is the full digest (same as 32 hex chars). MD5 64-bit is a shortened representation (same as 16 hex chars) used by some legacy systems.' }
     ]
   },
   '/sha1-generator': {

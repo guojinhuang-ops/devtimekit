@@ -52,7 +52,18 @@ export default function HashToolClient({ kind }: { kind: HashKind }) {
     const upper32 = lower32.toUpperCase();
     const lower16 = lower32.slice(8, 24);
     const upper16 = upper32.slice(8, 24);
-    return { lower32, upper32, lower16, upper16 };
+
+    // Character-length variants:
+    // 64 chars = MD5(input) + MD5(MD5(input))
+    // 128 chars = MD5(input) + MD5(chain2) + MD5(chain3) + MD5(chain4)
+    const lower32Chain2 = CryptoJS.MD5(lower32).toString(CryptoJS.enc.Hex);
+    const lower32Chain3 = CryptoJS.MD5(lower32Chain2).toString(CryptoJS.enc.Hex);
+    const lower32Chain4 = CryptoJS.MD5(lower32Chain3).toString(CryptoJS.enc.Hex);
+    const lower64 = lower32 + lower32Chain2;
+    const upper64 = lower64.toUpperCase();
+    const lower128 = lower32 + lower32Chain2 + lower32Chain3 + lower32Chain4;
+    const upper128 = lower128.toUpperCase();
+    return { lower32, upper32, lower16, upper16, lower64, upper64, lower128, upper128 };
   }, [input]);
 
   const sha = useMemo(() => {
@@ -127,10 +138,14 @@ export default function HashToolClient({ kind }: { kind: HashKind }) {
         {kind === 'md5-generator' && md5 ? (
           <div className="space-y-3">
             {[
+              ['MD5 16 Lowercase', md5.lower16],
+              ['MD5 16 Uppercase', md5.upper16],
               ['MD5 32 Lowercase', md5.lower32],
               ['MD5 32 Uppercase', md5.upper32],
-              ['MD5 16 Lowercase', md5.lower16],
-              ['MD5 16 Uppercase', md5.upper16]
+              ['MD5 64 chars Lowercase', md5.lower64],
+              ['MD5 64 chars Uppercase', md5.upper64],
+              ['MD5 128 chars Lowercase', md5.lower128],
+              ['MD5 128 chars Uppercase', md5.upper128]
             ].map(([label, value]) => (
               <div key={label} className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800">
                 <div className="mb-2 flex items-center justify-between gap-2">
@@ -220,4 +235,3 @@ export default function HashToolClient({ kind }: { kind: HashKind }) {
     </section>
   );
 }
-

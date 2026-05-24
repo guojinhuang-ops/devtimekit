@@ -171,7 +171,7 @@ export const tools: ToolItem[] = [
   {
     title: 'MD5 Generator',
     href: '/md5-generator',
-    summary: 'Generate MD5 32/16 uppercase and lowercase hashes from text.',
+    summary: 'Generate MD5 128-bit/64-bit and 32/16 uppercase and lowercase hashes from text.',
     category: 'Hash'
   },
   {
