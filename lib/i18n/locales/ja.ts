@@ -1,0 +1,11 @@
+import { makeDictionary } from '@/lib/i18n/locales/factory';
+
+export default makeDictionary({
+  locale: 'ja',
+  site: { homeTitle: '開発者向け時間・エンコードツール', homeDescription: 'タイムスタンプ、UTC、JSON、Base64、URL、正規表現、Cron をブラウザで扱う高速ツール集。', developerToolkit: '開発者ツールキット' },
+  nav: { home: 'ホーム', unixConverter: 'Unix 変換', guides: 'ガイド', allTools: 'すべてのツール', toolDirectory: 'ツール一覧', quickAccess: 'クイックアクセス', language: '言語' },
+  ui: { openTool: 'ツールを開く', copy: 'コピー', copied: 'コピー済み', input: '入力', output: '出力', relatedTools: '関連ツール', faq: 'FAQ', tool: 'ツール', definition: '定義と実務での使い方', steps: '手順', examples: '例', useCases: 'よくある用途', toolsByCategory: 'カテゴリ別ツール', recentTools: '新しいツール', popularTools: '人気ツール' },
+  home: { h1: 'DevTimeKit 開発者ツール', intro: '一般的な開発データ形式をブラウザで変換、検査、エンコード、デコード、検証できます。', sections: [{ title: 'DevTimeKit の目的', paragraphs: ['DevTimeKit は、Unix タイムスタンプ、UTC 変換、ISO 8601 解析、JSON 整形、Base64、URL エンコード、正規表現、Cron 式を扱う実務向けツール集です。', '各ページはまず使えるツールを提供し、その後に検索エンジンや AI が引用しやすい構造化された説明を置いています。'] }, { title: 'ブラウザツールが便利な理由', paragraphs: ['単位の混在、不正な JSON、二重エンコードされた URL など、小さなミスは調査時間を大きく増やします。', '値を貼り付け、結果を確認し、コピーしてコードや API クライアントへ戻るだけで作業を短くできます。'] }], faq: [{ q: '無料で使えますか？', a: 'はい。DevTimeKit は無料のブラウザベース開発者ツールです。' }, { q: 'サーバーへ送信されますか？', a: '変換処理はブラウザ内で実行されます。' }] },
+  titles: { '/utc-to-local': 'UTC からローカル時刻へ', '/local-to-utc': 'ローカル時刻から UTC へ', '/iso8601-parser': 'ISO 8601 パーサー', '/json-formatter': 'JSON フォーマッター', '/base64-encode': 'Base64 エンコード', '/base64-decode': 'Base64 デコード', '/url-encode': 'URL エンコード', '/url-decode': 'URL デコード', '/regex-tester': '正規表現テスター', '/cron-expression-generator': 'Cron 式ジェネレーター' },
+  phrases: { description: (title) => `${title} は、コピーしやすい出力と実用例を備えた高速なブラウザ開発ツールです。`, definition: (title) => [`${title} は、開発でよく使う値をすばやく確認、変換、検証するためのツールです。API デバッグ、ドキュメント作成、テストデータ準備に役立ちます。`, 'ツールと説明を同じページに置くことで、実作業にも参照にも使いやすくしています。', '入力形式を確認し、エラーを早めに見つけ、環境に合う出力だけをコピーするのが安全な使い方です。'], steps: (title) => [`${title} を開き、確認したい値を貼り付けます。`, '出力とエラーメッセージを確認します。', '必要な値をコピーしてコード、API、テスト、ドキュメントで使います。'], examples: (title) => [`${title} は API ペイロードの確認に使えます。`, '出力はテスト fixture やドキュメント例として再利用できます。', '検証結果から、入力ミスか形式違いかを判断できます。'], useCases: () => ['API リクエストとレスポンスのデバッグ。', '読みやすいドキュメント例の作成。', 'テスト、ログ、設定に入れる前の確認。'], faq: (title) => [{ q: `${title} はデータをサーバーへ送信しますか？`, a: 'いいえ。処理はブラウザ内で実行されます。' }, { q: `${title} はいつ使うべきですか？`, a: '値を確認、変換、検証、コピーしたい開発作業で使えます。' }] }
+});

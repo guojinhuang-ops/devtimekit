@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { BASE_URL, SITE_DESCRIPTION, SITE_NAME } from '@/lib/site';
 
+const alternateLanguageCodes = ['zh', 'zh-TW', 'ja', 'es', 'vi', 'ko', 'ar', 'hi'];
+
 export function absoluteUrl(path: string): string {
   return `${BASE_URL}${path}`;
 }
@@ -8,36 +10,60 @@ export function absoluteUrl(path: string): string {
 export function buildMetadata({
   title,
   description,
-  path
+  path,
+  keywords = [],
+  languages
 }: {
   title: string;
   description: string;
   path: string;
+  keywords?: string[];
+  languages?: Record<string, string>;
 }): Metadata {
+  const normalizedTitle =
+    path !== '/' && !title.includes(' - ') ? `${title} - Online Developer Tool` : title;
+  const normalizedDescription =
+    description.length < 120
+      ? `${description} Practical browser-based workflow for validation, conversion, and copy-ready developer output.`
+      : description;
   const url = absoluteUrl(path);
+  const defaultLanguages =
+    languages ??
+    alternateLanguageCodes.reduce<Record<string, string>>(
+      (acc, locale) => {
+        acc[locale] = absoluteUrl(`/${locale}${path === '/' ? '' : path}`);
+        return acc;
+      },
+      {
+        en: absoluteUrl(path),
+        'x-default': absoluteUrl(path)
+      }
+    );
 
   return {
-    title,
-    description,
+    title: normalizedTitle,
+    description: normalizedDescription,
+    keywords,
     alternates: {
-      canonical: url
+      canonical: url,
+      languages: defaultLanguages
     },
     openGraph: {
-      title,
-      description,
+      title: normalizedTitle,
+      description: normalizedDescription,
       url,
       siteName: SITE_NAME,
       type: 'website'
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description
+      title: normalizedTitle,
+      description: normalizedDescription
     }
   };
 }
 
-export function buildWebApplicationJsonLd({
+export function buildSoftwareApplicationJsonLd({
   name,
   path,
   description
@@ -48,7 +74,7 @@ export function buildWebApplicationJsonLd({
 }) {
   return {
     '@context': 'https://schema.org',
-    '@type': 'WebApplication',
+    '@type': 'SoftwareApplication',
     name,
     description,
     applicationCategory: 'DeveloperApplication',
@@ -60,6 +86,29 @@ export function buildWebApplicationJsonLd({
       price: '0',
       priceCurrency: 'USD'
     }
+  };
+}
+
+export const buildWebApplicationJsonLd = buildSoftwareApplicationJsonLd;
+
+export function buildWebPageJsonLd({
+  name,
+  path,
+  description,
+  inLanguage
+}: {
+  name: string;
+  path: string;
+  description: string;
+  inLanguage?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name,
+    description,
+    url: absoluteUrl(path),
+    inLanguage: inLanguage ?? 'en'
   };
 }
 

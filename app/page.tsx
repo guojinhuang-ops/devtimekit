@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import FAQSection from '@/components/FAQSection';
 import HomeLiveTicker from '@/components/HomeLiveTicker';
 import JsonLd from '@/components/JsonLd';
 import ToolCard from '@/components/ToolCard';
-import { buildBreadcrumbJsonLd, buildFaqJsonLd, buildMetadata, buildWebApplicationJsonLd } from '@/lib/seo';
+import { buildBreadcrumbJsonLd, buildFaqJsonLd, buildMetadata, buildWebApplicationJsonLd, buildWebPageJsonLd } from '@/lib/seo';
 import { tools } from '@/lib/tools';
 
 const faqItems = [
@@ -22,26 +23,39 @@ const faqItems = [
 ];
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Unix Timestamp Converter & Epoch Tools',
+  title: 'DevTimeKit Developer Tools - Timestamp, JSON, Encoding, Hash Utilities',
   description:
-    'Convert Unix timestamps instantly. Explore epoch tools, UTC references, ISO 8601 conversion, and practical developer guides.',
+    'Browser-based developer tools for timestamps, JSON formatting, Base64, URL encoding, hash generation, and API debugging workflows.',
   path: '/'
 });
 
 export default function HomePage() {
   const featured = tools.slice(0, 6);
+  const recentTools = tools.slice(-10).reverse();
+  const popularTools = [
+    '/unix-timestamp-converter',
+    '/json-formatter',
+    '/utc-to-local',
+    '/base64-encode',
+    '/url-encode',
+    '/regex-tester'
+  ]
+    .map((href) => tools.find((tool) => tool.href === href))
+    .filter((tool): tool is (typeof tools)[number] => Boolean(tool));
+  const categories = ['Time', 'Encoding', 'Developer', 'Hash'] as const;
 
   return (
     <>
       <JsonLd data={buildWebApplicationJsonLd({ name: 'DevTimeKit', path: '/', description: metadata.description as string })} />
+      <JsonLd data={buildWebPageJsonLd({ name: 'DevTimeKit Developer Tools', path: '/', description: metadata.description as string })} />
       <JsonLd data={buildFaqJsonLd(faqItems)} />
       <JsonLd data={buildBreadcrumbJsonLd([{ name: 'Home', path: '/' }])} />
 
       <section className="card">
-        <p className="text-sm font-medium text-brand-700 dark:text-brand-100">Developer Time Toolkit</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight">Unix Timestamp Converter & Epoch Tools</h1>
+        <p className="text-sm font-medium text-brand-700 dark:text-brand-100">Privacy-First Developer Toolkit</p>
+        <h1 className="mt-2 text-4xl font-bold tracking-tight">DevTimeKit: Online Tools for Time, JSON, Encoding, and Hash Workflows</h1>
         <p className="mt-3 max-w-3xl text-base text-slate-700 dark:text-slate-300">
-          Convert Unix timestamps instantly. View epoch time in seconds, milliseconds, UTC, ISO 8601 and local time.
+          DevTimeKit helps developers convert timestamps, format JSON, generate hashes, and inspect data formats quickly in the browser. Most tools run client-side to keep workflows fast and privacy-friendly.
         </p>
         <HomeLiveTicker />
       </section>
@@ -52,6 +66,59 @@ export default function HomePage() {
           {featured.map((tool) => (
             <ToolCard key={tool.href} tool={tool} />
           ))}
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="text-2xl font-semibold">Tools by Category</h2>
+        <div className="mt-4 grid gap-6 lg:grid-cols-3">
+          {categories.map((category) => (
+            <section key={category} aria-labelledby={`${category}-tools`}>
+              <h3 id={`${category}-tools`} className="text-lg font-semibold">
+                {category} Tools
+              </h3>
+              <ul className="mt-3 space-y-2 text-sm">
+                {tools
+                  .filter((tool) => tool.category === category)
+                  .slice(0, 10)
+                  .map((tool) => (
+                    <li key={tool.href}>
+                      <Link href={tool.href} className="text-brand-700 hover:underline dark:text-brand-100">
+                        {tool.title}
+                      </Link>
+                      <p className="mt-1 text-slate-600 dark:text-slate-300">{tool.summary}</p>
+                    </li>
+                  ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-10 grid gap-8 lg:grid-cols-2">
+        <div>
+          <h2 className="text-2xl font-semibold">Recent Tools</h2>
+          <ul className="mt-3 space-y-2 text-sm">
+            {recentTools.map((tool) => (
+              <li key={tool.href}>
+                <Link href={tool.href} className="text-brand-700 hover:underline dark:text-brand-100">
+                  {tool.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 className="text-2xl font-semibold">Popular Tools</h2>
+          <ul className="mt-3 space-y-2 text-sm">
+            {popularTools.map((tool) => (
+              <li key={tool.href}>
+                <Link href={tool.href} className="text-brand-700 hover:underline dark:text-brand-100">
+                  {tool.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -121,11 +188,37 @@ export default function HomePage() {
         </ul>
       </section>
 
+      <section className="card mt-8 space-y-4">
+        <h2 className="text-2xl font-semibold">Why Developers Use DevTimeKit</h2>
+        <p className="text-sm leading-7 text-slate-700 dark:text-slate-300">
+          Teams use DevTimeKit when they need fast validation before shipping API changes, debugging production incidents, or preparing documentation. The site focuses on practical operations: copy-ready output, clear section structure, and linked tools so you can move from one transformation step to the next without context switching.
+        </p>
+        <p className="text-sm leading-7 text-slate-700 dark:text-slate-300">
+          Browser-side processing is a core design choice. For many utilities, raw input never needs to leave your machine. That helps with privacy-sensitive debugging and speeds up routine checks. When developers can verify units, formats, and signatures quickly, release quality improves and incident resolution gets faster.
+        </p>
+      </section>
+
+      <section className="card mt-8">
+        <h2 className="text-2xl font-semibold">Guides for Deeper Learning</h2>
+        <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+          <li><Link href="/guides/unix-timestamp-guide" className="text-brand-700 hover:underline dark:text-brand-100">Unix Timestamp Guide</Link></li>
+          <li><Link href="/guides/json-formatting-guide" className="text-brand-700 hover:underline dark:text-brand-100">JSON Formatting Guide</Link></li>
+          <li><Link href="/guides/md5-vs-sha256" className="text-brand-700 hover:underline dark:text-brand-100">MD5 vs SHA256</Link></li>
+          <li><Link href="/guides/what-is-epoch-time" className="text-brand-700 hover:underline dark:text-brand-100">What is Epoch Time</Link></li>
+          <li><Link href="/guides/utc-vs-local-time" className="text-brand-700 hover:underline dark:text-brand-100">UTC vs Local Time</Link></li>
+          <li><Link href="/guides/base64-explained" className="text-brand-700 hover:underline dark:text-brand-100">Base64 Explained</Link></li>
+        </ul>
+      </section>
+
       <section className="card mt-8">
         <h2 className="text-2xl font-semibold">Popular Developer Time Utilities</h2>
         <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
           {tools.slice(0, 10).map((item) => (
-            <li key={item.href}>{item.title}</li>
+            <li key={item.href}>
+              <Link href={item.href} className="text-brand-700 hover:underline dark:text-brand-100">
+                {item.title}
+              </Link>
+            </li>
           ))}
         </ul>
       </section>

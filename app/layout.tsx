@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import BackToTopButton from '@/components/BackToTopButton';
 import CopyToast from '@/components/CopyToast';
 import SiteFooter from '@/components/SiteFooter';
 import SiteHeader from '@/components/SiteHeader';
@@ -13,6 +14,11 @@ export const metadata: Metadata = {
   },
   description: defaultSiteMeta.description,
   metadataBase: new URL(BASE_URL),
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg'
+  },
   openGraph: {
     title: defaultSiteMeta.title,
     description: defaultSiteMeta.description,
@@ -33,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main className="container-page py-10">{children}</main>
         <SiteFooter />
+        <BackToTopButton />
         <CopyToast />
       </body>
     </html>

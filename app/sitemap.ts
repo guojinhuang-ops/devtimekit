@@ -1,25 +1,19 @@
 import type { MetadataRoute } from 'next';
+import { allLanguageCodes, localizedPath } from '@/lib/i18n';
+import { guidePages } from '@/lib/guides';
 import { BASE_URL } from '@/lib/site';
+import { tools } from '@/lib/tools';
 
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
+  const staticRoutes = ['/about', '/privacy', '/terms', '/contact'];
+  const localizedRoutes = ['/', ...tools.map((tool) => tool.href)];
   const routes = [
-    '/',
-    '/unix-timestamp-converter',
-    '/current-unix-timestamp',
-    '/current-timestamp-milliseconds',
-    '/timestamp-to-date',
-    '/date-to-timestamp',
-    '/about-unix-time',
-    '/epoch-converter',
-    '/utc-time-now',
-    '/iso-8601-converter',
-    '/javascript-timestamp',
-    '/python-timestamp',
-    '/mysql-unix-timestamp',
-    '/unix-time-in-milliseconds',
-    '/timestamp-cheatsheet'
+    ...allLanguageCodes.flatMap((locale) => localizedRoutes.map((route) => localizedPath(route, locale))),
+    ...guideRoutes,
+    ...staticRoutes
   ];
 
   return routes.map((route) => ({

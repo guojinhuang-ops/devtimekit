@@ -1,0 +1,8 @@
+<svg width="320" height="64" viewBox="0 0 320 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="64" height="64" rx="14" fill="#0F172A"/>
+  <path d="M16 32C16 23.1634 23.1634 16 32 16C40.8366 16 48 23.1634 48 32C48 40.8366 40.8366 48 32 48C23.1634 48 16 40.8366 16 32Z" stroke="#2563EB" stroke-width="4"/>
+  <path d="M32 23V32L38 36" stroke="#06B6D4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 23L6 32L10 41" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M54 23L58 32L54 41" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="80" y="41" fill="#0F172A" font-family="Inter, Geist, system-ui, -apple-system, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.4">DevTimeKit</text>
+</svg>

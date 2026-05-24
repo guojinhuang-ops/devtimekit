@@ -1,9 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { getDictionary, getLocaleFromPath } from '@/lib/i18n';
 
 export default function CopyButton({ value, label = 'Copy' }: { value: string; label?: string }) {
   const [copied, setCopied] = useState(false);
+  const pathname = usePathname() || '/';
+  const dictionary = getDictionary(getLocaleFromPath(pathname));
+  const effectiveLabel = label === 'Copy' ? dictionary.ui.copy : label;
 
   const onCopy = async () => {
     try {
@@ -22,7 +27,7 @@ export default function CopyButton({ value, label = 'Copy' }: { value: string; l
       onClick={onCopy}
       className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
     >
-      {copied ? 'Copied' : label}
+      {copied ? dictionary.ui.copied : effectiveLabel}
     </button>
   );
 }
