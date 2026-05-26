@@ -20,6 +20,7 @@ export default function RelatedTools({
     '/unix-timestamp-converter',
     '/timestamp-to-date',
     '/date-to-timestamp',
+    '/world-cup-2026-time-converter',
     '/json-formatter',
     '/base64-encode',
     '/md5-generator'

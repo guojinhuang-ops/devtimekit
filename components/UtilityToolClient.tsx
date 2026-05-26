@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import yaml from 'js-yaml';
 import CopyButton from '@/components/CopyButton';
 import HashToolClient from '@/components/HashToolClient';
@@ -67,7 +67,10 @@ export type UtilityKind =
   | 'html-encode'
   | 'html-decode'
   | 'unicode-converter'
-  | 'ascii-converter';
+  | 'ascii-converter'
+  | 'world-cup-2026-time-converter'
+  | 'world-cup-2026-countdown'
+  | 'world-cup-2026-schedule-time-zones';
 
 type ToolResult = {
   error: string;
@@ -84,6 +87,29 @@ const cronPresets = [
   { label: 'First day of month', value: '0 0 1 * *', meaning: 'Runs at midnight on day 1 of each month.' }
 ];
 
+const worldCupTimezones = [
+  'UTC',
+  'America/Los_Angeles',
+  'America/Denver',
+  'America/Chicago',
+  'America/New_York',
+  'America/Toronto',
+  'America/Mexico_City',
+  'Europe/London',
+  'Europe/Berlin',
+  'Asia/Shanghai',
+  'Asia/Tokyo'
+];
+
+const worldCupStaticMatches = [
+  { id: 'M1', stage: 'Opening Match', city: 'Mexico City', timezone: 'America/Mexico_City', kickoff: '2026-06-11T19:00:00' },
+  { id: 'M2', stage: 'Group Match', city: 'Los Angeles', timezone: 'America/Los_Angeles', kickoff: '2026-06-14T18:00:00' },
+  { id: 'M3', stage: 'Group Match', city: 'Toronto', timezone: 'America/Toronto', kickoff: '2026-06-18T20:00:00' },
+  { id: 'M4', stage: 'Round of 16', city: 'Dallas', timezone: 'America/Chicago', kickoff: '2026-07-01T21:00:00' },
+  { id: 'M5', stage: 'Semi Final', city: 'Atlanta', timezone: 'America/New_York', kickoff: '2026-07-14T19:30:00' },
+  { id: 'M6', stage: 'Final', city: 'New York/New Jersey', timezone: 'America/New_York', kickoff: '2026-07-19T19:00:00' }
+];
+
 function encodeBase64(value: string) {
   return btoa(unescape(encodeURIComponent(value)));
 }
@@ -95,6 +121,34 @@ function decodeBase64(value: string) {
 function parseDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getZoneOffsetMinutes(date: Date, timeZone: string) {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+  const parts = formatter.formatToParts(date);
+  const get = (type: string) => Number(parts.find((part) => part.type === type)?.value ?? '0');
+  const zoneAsUtc = Date.UTC(get('year'), get('month') - 1, get('day'), get('hour'), get('minute'), get('second'));
+  return (zoneAsUtc - date.getTime()) / 60000;
+}
+
+function zonedDateTimeToUtc(localDateTime: string, timeZone: string) {
+  const [d, t] = localDateTime.split('T');
+  if (!d || !t) return null;
+  const [y, m, day] = d.split('-').map(Number);
+  const [h, min] = t.split(':').map(Number);
+  if ([y, m, day, h, min].some((n) => Number.isNaN(n))) return null;
+  const approx = new Date(Date.UTC(y, m - 1, day, h, min, 0));
+  const offset = getZoneOffsetMinutes(approx, timeZone);
+  return new Date(approx.getTime() - offset * 60000);
 }
 
 function detectJsonError(input: string, message: string) {
@@ -421,6 +475,35 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
   const [interfaceName, setInterfaceName] = useState('RootModel');
   const [search, setSearch] = useState('');
   const [expandAll, setExpandAll] = useState(false);
+  const [hostTimezone, setHostTimezone] = useState('America/Mexico_City');
+  const [localTimezone, setLocalTimezone] = useState('UTC');
+  const [countdownTimezone, setCountdownTimezone] = useState('UTC');
+  const [nowMs, setNowMs] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (
+      kind !== 'world-cup-2026-countdown' &&
+      kind !== 'world-cup-2026-time-converter' &&
+      kind !== 'world-cup-2026-schedule-time-zones'
+    ) {
+      return;
+    }
+    try {
+      const resolved = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (resolved) {
+        setLocalTimezone(resolved);
+        setCountdownTimezone(resolved);
+      }
+    } catch {
+      // keep defaults
+    }
+  }, [kind]);
+
+  useEffect(() => {
+    if (kind !== 'world-cup-2026-countdown') return;
+    const timer = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [kind]);
 
   const result = useMemo<ToolResult>(() => {
     try {
@@ -434,7 +517,74 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
         return { error: '', output: id, rows: [] };
       }
 
+      if (kind === 'world-cup-2026-countdown') {
+        const openingUtc = new Date('2026-06-11T23:00:00Z').getTime();
+        const finalUtc = new Date('2026-07-19T23:00:00Z').getTime();
+        const remaining = (target: number) => Math.max(0, target - nowMs);
+        const split = (ms: number) => {
+          const totalSeconds = Math.floor(ms / 1000);
+          const days = Math.floor(totalSeconds / 86400);
+          const hours = Math.floor((totalSeconds % 86400) / 3600);
+          const minutes = Math.floor((totalSeconds % 3600) / 60);
+          const seconds = totalSeconds % 60;
+          return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        };
+        const zoneNow = new Intl.DateTimeFormat('en-US', {
+          timeZone: countdownTimezone,
+          dateStyle: 'full',
+          timeStyle: 'long'
+        }).format(new Date(nowMs));
+        return {
+          error: '',
+          output: `Opening Match: ${split(remaining(openingUtc))}\nFinal: ${split(remaining(finalUtc))}`,
+          rows: [
+            { label: 'Display Timezone', value: countdownTimezone },
+            { label: 'Current Time', value: zoneNow },
+            { label: 'Opening Match Countdown', value: split(remaining(openingUtc)) },
+            { label: 'Final Countdown', value: split(remaining(finalUtc)) }
+          ]
+        };
+      }
+
+      if (kind === 'world-cup-2026-schedule-time-zones') {
+        const lines = worldCupStaticMatches.map((match) => {
+          const utcDate = zonedDateTimeToUtc(match.kickoff, match.timezone);
+          const local = utcDate
+            ? new Intl.DateTimeFormat('en-US', { timeZone: localTimezone, dateStyle: 'medium', timeStyle: 'short' }).format(utcDate)
+            : 'Invalid kickoff';
+          return `${match.id} ${match.stage} | ${match.city} (${match.timezone}) -> ${local}`;
+        });
+        return { error: '', output: lines.join('\n'), rows: [{ label: 'Local Timezone', value: localTimezone }] };
+      }
+
       if (!input.trim()) return { error: '', output: '', rows: [] };
+
+      if (kind === 'world-cup-2026-time-converter') {
+        const utcDate =
+          hostTimezone === 'UTC' ? parseDate(input) : zonedDateTimeToUtc(input, hostTimezone);
+        if (!utcDate) {
+          return {
+            error: 'Enter a valid match datetime, for example 2026-06-11T19:00.',
+            output: '',
+            rows: []
+          };
+        }
+        const hostDisplay = new Intl.DateTimeFormat('en-US', { timeZone: hostTimezone === 'UTC' ? 'UTC' : hostTimezone, dateStyle: 'full', timeStyle: 'short' }).format(utcDate);
+        const localDisplay = new Intl.DateTimeFormat('en-US', { timeZone: localTimezone, dateStyle: 'full', timeStyle: 'short' }).format(utcDate);
+        const calendarText = `World Cup 2026 Match - ${localDisplay} (${localTimezone})`;
+        return {
+          error: '',
+          output: `${localDisplay}\n${calendarText}`,
+          rows: [
+            { label: 'Host Timezone', value: hostTimezone },
+            { label: 'User Local Timezone', value: localTimezone },
+            { label: 'UTC Time', value: utcDate.toISOString() },
+            { label: 'Host Local Time', value: hostDisplay },
+            { label: 'Local Watch Time', value: localDisplay },
+            { label: 'Add to Calendar', value: calendarText }
+          ]
+        };
+      }
 
       if (kind === 'utc-to-local') {
         const date = parseDate(input);
@@ -718,7 +868,22 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
       }
       return { error: message, output: '', rows: [] };
     }
-  }, [cronPreset, csvDelimiter, input, interfaceName, jsonMode, kind, rootName, secondary, sortDesc, uuidValue]);
+  }, [
+    countdownTimezone,
+    cronPreset,
+    csvDelimiter,
+    hostTimezone,
+    input,
+    interfaceName,
+    jsonMode,
+    kind,
+    localTimezone,
+    nowMs,
+    rootName,
+    secondary,
+    sortDesc,
+    uuidValue
+  ]);
 
   const regexMatches = useMemo(() => {
     if (kind !== 'regex-tester' || !input || !secondary) return [];
@@ -794,13 +959,46 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
               Generate UUID
             </button>
           </div>
+        ) : kind === 'world-cup-2026-time-converter' ? (
+          <div className="space-y-3">
+            <label className="block text-sm font-medium">
+              Host city timezone
+              <select value={hostTimezone} onChange={(event) => setHostTimezone(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+                {worldCupTimezones.map((zone) => <option key={zone} value={zone}>{zone}</option>)}
+              </select>
+            </label>
+            <label className="block text-sm font-medium">
+              User local timezone
+              <select value={localTimezone} onChange={(event) => setLocalTimezone(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+                {worldCupTimezones.map((zone) => <option key={zone} value={zone}>{zone}</option>)}
+              </select>
+            </label>
+            <label className="block text-sm font-medium">
+              Match datetime
+              <input value={input} onChange={(event) => setInput(event.target.value)} placeholder="2026-06-11T19:00" className="mt-2 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm dark:border-slate-700 dark:bg-slate-800" />
+            </label>
+          </div>
+        ) : kind === 'world-cup-2026-countdown' ? (
+          <label className="block text-sm font-medium">
+            Display timezone
+            <select value={countdownTimezone} onChange={(event) => setCountdownTimezone(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+              {worldCupTimezones.map((zone) => <option key={zone} value={zone}>{zone}</option>)}
+            </select>
+          </label>
+        ) : kind === 'world-cup-2026-schedule-time-zones' ? (
+          <label className="block text-sm font-medium">
+            User local timezone
+            <select value={localTimezone} onChange={(event) => setLocalTimezone(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+              {worldCupTimezones.map((zone) => <option key={zone} value={zone}>{zone}</option>)}
+            </select>
+          </label>
         ) : (
           <label className="block text-sm font-medium">
             Input
             <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
-              className="mt-2 min-h-40 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm dark:border-slate-700 dark:bg-slate-800"
+              className="mt-2 min-h-40 w-full rounded-lg border border-slate-300 bg-white px-3 py-3 font-mono text-sm leading-6 dark:border-slate-700 dark:bg-slate-800"
               placeholder={jsonKinds.has(kind) ? '{"name":"DevTimeKit"}' : 'Enter value to convert'}
             />
           </label>
@@ -809,8 +1007,8 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
         <div className="flex flex-wrap gap-2">
           {kind === 'json-formatter' ? (
             <>
-              <button type="button" onClick={() => setJsonMode('beautify')} className={`rounded-md border px-2 py-1 text-xs ${jsonMode === 'beautify' ? 'bg-brand-600 text-white' : ''}`}>Beautify</button>
-              <button type="button" onClick={() => setJsonMode('minify')} className={`rounded-md border px-2 py-1 text-xs ${jsonMode === 'minify' ? 'bg-brand-600 text-white' : ''}`}>Minify</button>
+              <button type="button" onClick={() => setJsonMode('beautify')} className={`min-h-11 rounded-md border px-3 py-2 text-xs ${jsonMode === 'beautify' ? 'bg-brand-600 text-white' : ''}`}>Beautify</button>
+              <button type="button" onClick={() => setJsonMode('minify')} className={`min-h-11 rounded-md border px-3 py-2 text-xs ${jsonMode === 'minify' ? 'bg-brand-600 text-white' : ''}`}>Minify</button>
               <button type="button" onClick={() => setInput('{"name":"DevTimeKit","tags":["json","tool"]}')} className="rounded-md border px-2 py-1 text-xs">Example</button>
               <button type="button" onClick={() => setInput('')} className="rounded-md border px-2 py-1 text-xs">Clear</button>
               {result.output ? <button type="button" onClick={() => downloadFile('formatted.json', result.output, 'application/json')} className="rounded-md border px-2 py-1 text-xs">Download .json</button> : null}
@@ -900,7 +1098,7 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
             ) : result.highlighted ? (
               <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-sm" dangerouslySetInnerHTML={{ __html: result.highlighted }} />
             ) : (
-              <pre className="whitespace-pre-wrap break-words font-mono text-sm">{result.output}</pre>
+              <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-sm">{result.output}</pre>
             )}
           </div>
         ) : null}
@@ -926,6 +1124,23 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
         {[...result.rows, ...hashRows].map((row) => (
           <ValueRow key={row.label} label={row.label} value={row.value} />
         ))}
+
+        <div className="sticky bottom-2 z-20 mt-2 rounded-xl border border-slate-200 bg-white/95 p-2 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 sm:hidden">
+          <div className="grid grid-cols-2 gap-2">
+            <button type="button" onClick={() => setInput('')} className="min-h-11 rounded-md border px-3 text-sm">Clear</button>
+            <CopyButton value={result.output || input || ''} label="Copy" />
+          </div>
+        </div>
+
+        {(kind === 'world-cup-2026-time-converter' || kind === 'world-cup-2026-countdown' || kind === 'world-cup-2026-schedule-time-zones') ? (
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+            <p>DevTimeKit is an independent time conversion tool and is not affiliated with FIFA.</p>
+            <p className="mt-2">DevTimeKit 是独立时间换算工具，与 FIFA 官方无关联。</p>
+            <p className="mt-2">
+              Related: <a className="text-brand-700 underline dark:text-brand-100" href="/timezone-converter">/timezone-converter</a> | <a className="text-brand-700 underline dark:text-brand-100" href="/utc-to-local">/utc-to-local</a> | <a className="text-brand-700 underline dark:text-brand-100" href="/local-to-utc">/local-to-utc</a> | <a className="text-brand-700 underline dark:text-brand-100" href="/unix-timestamp-converter">/unix-timestamp-converter</a> | <a className="text-brand-700 underline dark:text-brand-100" href="/iso8601-parser">/iso8601-parser</a> | <a className="text-brand-700 underline dark:text-brand-100" href="/utc-time-now">/utc-time-now</a>
+            </p>
+          </div>
+        ) : null}
       </div>
     </section>
   );

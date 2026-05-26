@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   },
   description: defaultSiteMeta.description,
   metadataBase: new URL(BASE_URL),
+  manifest: '/manifest.webmanifest',
   icons: {
     icon: '/icon.svg',
     shortcut: '/icon.svg',
@@ -37,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <SiteHeader />
-        <main className="container-page py-10">{children}</main>
+        <main className="container-page py-6 sm:py-8 lg:py-10">{children}</main>
         <SiteFooter />
         <BackToTopButton />
         <CopyToast />

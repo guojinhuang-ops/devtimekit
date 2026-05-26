@@ -109,6 +109,24 @@ export const tools: ToolItem[] = [
     category: 'Time'
   },
   {
+    title: 'World Cup 2026 Time Converter',
+    href: '/world-cup-2026-time-converter',
+    summary: 'Convert FIFA World Cup 2026 match time to local time across host city and viewer timezones.',
+    category: 'Time'
+  },
+  {
+    title: 'World Cup 2026 Countdown',
+    href: '/world-cup-2026-countdown',
+    summary: 'Track the countdown to the World Cup 2026 opening match and final in your local timezone.',
+    category: 'Time'
+  },
+  {
+    title: 'World Cup 2026 Schedule Time Zones',
+    href: '/world-cup-2026-schedule-time-zones',
+    summary: 'View static World Cup 2026 schedule examples with local timezone conversion and host city notes.',
+    category: 'Time'
+  },
+  {
     title: 'JSON Formatter',
     href: '/json-formatter',
     summary: 'Format, validate, and minify JSON in the browser with copy-ready output.',

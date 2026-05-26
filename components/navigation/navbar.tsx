@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { ChevronDown } from 'lucide-react';
 import DarkModeToggle from '@/components/DarkModeToggle';
-import MegaMenu from '@/components/navigation/mega-menu';
-import MobileMenu from '@/components/navigation/mobile-menu';
-import ToolSearch from '@/components/navigation/tool-search';
 import {
   allLanguageCodes,
   getDictionary,
@@ -17,6 +15,10 @@ import {
 } from '@/lib/i18n';
 import { getCategoryLabel, getGuidesLabel, type NavCategoryKey } from '@/lib/navigation';
 import { SITE_NAME } from '@/lib/site';
+
+const MegaMenu = dynamic(() => import('@/components/navigation/mega-menu'));
+const MobileMenu = dynamic(() => import('@/components/navigation/mobile-menu'));
+const ToolSearch = dynamic(() => import('@/components/navigation/tool-search'));
 
 type NavbarProps = {
   pathname: string;
@@ -98,15 +100,15 @@ export default function Navbar({ pathname }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur dark:border-slate-800 dark:bg-slate-950/85">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div dir={dictionary.dir} className={`flex h-16 items-center justify-between ${isRtl ? 'xl:flex-row-reverse' : ''}`}>
-          <div className={`flex items-center gap-8 ${isRtl ? 'xl:flex-row-reverse' : ''}`}>
+        <div dir={dictionary.dir} className={`flex h-14 items-center justify-between sm:h-16 ${isRtl ? 'xl:flex-row-reverse' : ''}`}>
+          <div className={`flex min-w-0 items-center gap-2 sm:gap-8 ${isRtl ? 'xl:flex-row-reverse' : ''}`}>
             <Link
               href={localizedPath('/', locale)}
-              className="inline-flex flex-shrink-0 items-center gap-2.5 whitespace-nowrap rounded-md px-1 py-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              className="inline-flex min-w-0 flex-shrink items-center gap-2 whitespace-nowrap rounded-md px-1 py-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               aria-label={SITE_NAME}
             >
               <Image src="/logo-devtimekit-icon.svg" alt="" width={30} height={30} priority />
-              <span className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{SITE_NAME}</span>
+              <span className="hidden text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100 sm:inline">{SITE_NAME}</span>
             </Link>
 
             <div ref={navRootRef} className="relative hidden xl:flex" onMouseLeave={scheduleClose}>
@@ -154,6 +156,31 @@ export default function Navbar({ pathname }: NavbarProps) {
             </div>
           </div>
 
+          <div className="flex items-center gap-1.5 xl:hidden">
+            <ToolSearch locale={locale} compact />
+            <div className="relative" ref={languageRef}>
+              <button
+                type="button"
+                aria-expanded={languageOpen}
+                aria-label={dictionary.nav.language}
+                onClick={() => setLanguageOpen((prev) => !prev)}
+                className="inline-flex min-h-11 items-center rounded-md border border-slate-300 px-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                {locale.toUpperCase()}
+              </button>
+              {languageOpen ? (
+                <div className={`absolute z-50 mt-2 w-44 rounded-xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900 ${isRtl ? 'left-0' : 'right-0'}`}>
+                  {allLanguageCodes.map((lang) => (
+                    <Link key={lang} href={localizedPath(currentPath, lang)} onClick={() => setLanguageOpen(false)} className={`block rounded-lg px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 ${lang === locale ? 'font-semibold text-brand-700 dark:text-brand-100' : 'text-slate-700 dark:text-slate-200'}`}>
+                      {languageNames[lang]}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            <MobileMenu locale={locale} pathname={pathname} direction={dictionary.dir} compact />
+          </div>
+
           <div className="hidden flex-shrink-0 items-center gap-3 xl:flex">
             <div className="relative" ref={languageRef}>
               <button
@@ -190,7 +217,6 @@ export default function Navbar({ pathname }: NavbarProps) {
             <DarkModeToggle />
           </div>
 
-          <MobileMenu locale={locale} pathname={pathname} direction={dictionary.dir} />
         </div>
       </div>
     </header>

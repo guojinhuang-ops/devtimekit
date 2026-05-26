@@ -4,6 +4,7 @@ import JsonLd from '@/components/JsonLd';
 import RelatedTools from '@/components/RelatedTools';
 import TableOfContents from '@/components/TableOfContents';
 import UtilityToolClient from '@/components/UtilityToolClient';
+import ToolEngagement from '@/components/ToolEngagement';
 import {
   buildBreadcrumbJsonLd,
   buildFaqJsonLd,
@@ -172,6 +173,7 @@ export default function UtilitySeoPage({ page }: { page: UtilityPage }) {
       </div>
 
       <RelatedTools currentPath={page.path} />
+      <ToolEngagement title={page.title} path={page.path} />
     </article>
   );
 }

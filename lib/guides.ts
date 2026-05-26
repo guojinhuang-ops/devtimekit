@@ -113,6 +113,53 @@ function makeGuide(
 }
 
 export const guidePages: GuidePage[] = [
+  {
+    slug: 'world-cup-2026-time-zones',
+    title: 'World Cup 2026 Time Zones Guide',
+    description: 'Understand World Cup 2026 host countries/time zones and convert match kickoff times to your local timezone.',
+    category: 'Time Guides',
+    intro: [
+      'The 2026 tournament is hosted across the United States, Canada, and Mexico, so kickoff time planning depends on city timezone and daylight saving rules.',
+      'This guide explains practical conversion workflows between host local time, UTC, and your own local timezone for reliable viewing and team coordination.'
+    ],
+    sections: [
+      {
+        heading: 'Host countries and timezone overview',
+        paragraphs: [
+          'World Cup 2026 host cities span multiple North American timezones, mainly Pacific, Mountain, Central, and Eastern offsets.',
+          'Because kickoff announcements can be listed as local host time, conversion should always reference both city and timezone.'
+        ],
+        bullets: ['United States host cities: multiple timezone bands', 'Canada host cities: mainly Eastern/Pacific context', 'Mexico host cities: commonly Central timezone context']
+      },
+      {
+        heading: 'How to convert match time to local time',
+        paragraphs: [
+          'Start with the announced host city kickoff time, map it to the city timezone, then convert the same instant to your local timezone.',
+          'If UTC time is provided, conversion is simpler: convert UTC directly into local display time.'
+        ],
+        bullets: ['Host local time + host timezone -> UTC -> your local time', 'UTC kickoff -> your local time directly', 'Use one canonical UTC value for cross-team communication']
+      },
+      {
+        heading: 'UTC, local time, and timezone difference',
+        paragraphs: [
+          'UTC is a global reference. Local time is how that exact instant appears in a region with its own offset and DST rules.',
+          'Timezone difference is the offset gap between two regions at a given date, which can change seasonally.'
+        ]
+      }
+    ],
+    faq: [
+      { q: 'What is the safest way to share match time with global teams?', a: 'Share UTC first, then include local conversions for each team region.' },
+      { q: 'Why can local kickoff conversions change during the year?', a: 'Daylight saving transitions can shift offsets, so always convert using the actual match date.' },
+      { q: 'Can I convert from host city time without UTC?', a: 'Yes, but internally it is still converted through a UTC instant for accuracy.' }
+    ],
+    relatedTools: [
+      '/world-cup-2026-time-converter',
+      '/world-cup-2026-countdown',
+      '/world-cup-2026-schedule-time-zones',
+      '/utc-to-local',
+      '/local-to-utc'
+    ]
+  },
   makeGuide('unix-timestamp-guide', 'Unix Timestamp Guide for Developers', 'Understand Unix timestamp workflows, conversion rules, and production-safe handling patterns.', 'Time Guides', 'Unix timestamp', 'ISO 8601', ['/unix-timestamp-converter', '/timestamp-to-date', '/date-to-timestamp', '/utc-to-local']),
   makeGuide('json-formatting-guide', 'JSON Formatting Guide for API Debugging', 'Learn JSON formatting, validation, minification, and readable API payload practices.', 'JSON Guides', 'JSON formatting', 'JSON minification', ['/json-formatter', '/json-viewer', '/json-minifier', '/json-to-typescript']),
   makeGuide('md5-vs-sha256', 'MD5 vs SHA256: Which Hash Should You Use?', 'Compare MD5 and SHA256 across security, compatibility, and engineering use cases.', 'Hash Guides', 'MD5', 'SHA256', ['/md5-generator', '/sha256-generator', '/sha512-generator', '/hmac-generator']),

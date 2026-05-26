@@ -1,6 +1,7 @@
-﻿import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import DarkModeToggle from '@/components/DarkModeToggle';
 import { allLanguageCodes, getDictionary, languageNames, localizedPath, stripLocale, type LanguageCode } from '@/lib/i18n';
 import { getCategoryLabel, getGuidesLabel, getMenuSections, type NavCategoryKey } from '@/lib/navigation';
@@ -9,11 +10,13 @@ type MobileMenuProps = {
   locale: LanguageCode;
   pathname: string;
   direction: 'ltr' | 'rtl';
+  compact?: boolean;
 };
 
-export default function MobileMenu({ locale, pathname, direction }: MobileMenuProps) {
+export default function MobileMenu({ locale, pathname, direction, compact = false }: MobileMenuProps) {
   const isRtl = direction === 'rtl';
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [openSection, setOpenSection] = useState<NavCategoryKey | null>(null);
   const dictionary = getDictionary(locale);
   const currentPath = stripLocale(pathname);
@@ -23,10 +26,23 @@ export default function MobileMenu({ locale, pathname, direction }: MobileMenuPr
   const topLinks = useMemo(
     () => [
       { href: localizedPath('/', locale), label: dictionary.nav.home },
-      { href: '/guides', label: getGuidesLabel(locale) }
+      { href: localizedPath('/guides', locale), label: getGuidesLabel(locale) }
     ],
     [dictionary.nav.home, locale]
   );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [open]);
 
   return (
     <div className="xl:hidden">
@@ -35,17 +51,17 @@ export default function MobileMenu({ locale, pathname, direction }: MobileMenuPr
         aria-expanded={open}
         aria-label="Toggle navigation"
         onClick={() => setOpen((prev) => !prev)}
-        className="rounded-md border border-slate-300 p-2 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+        className={`min-h-11 rounded-md border border-slate-300 p-2 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 ${compact ? 'px-2.5' : ''}`}
       >
         {open ? <X size={18} /> : <Menu size={18} />}
       </button>
 
-      {open ? (
-        <div className="fixed inset-0 z-50 bg-slate-950/40" onClick={() => setOpen(false)}>
+      {open && mounted ? createPortal(
+        <div className="fixed inset-0 z-[120] bg-slate-950/40" onClick={() => setOpen(false)}>
           <aside
             dir={direction}
             className={`h-full w-[92vw] max-w-sm overflow-y-auto border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-950 ${
-              isRtl ? 'mr-auto border-r' : 'ml-auto border-l'
+              isRtl ? 'mr-auto border-l' : 'ml-auto border-l'
             }`}
             onClick={(event) => event.stopPropagation()}
           >
@@ -137,7 +153,7 @@ export default function MobileMenu({ locale, pathname, direction }: MobileMenuPr
             </nav>
           </aside>
         </div>
-      ) : null}
+      , document.body) : null}
     </div>
   );
 }

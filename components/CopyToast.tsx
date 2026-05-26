@@ -19,7 +19,7 @@ export default function CopyToast() {
   if (!message) return null;
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white shadow-lg dark:bg-slate-100 dark:text-slate-900">
+    <div className="fixed bottom-5 right-5 z-40 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white shadow-lg dark:bg-slate-100 dark:text-slate-900">
       {message}
     </div>
   );

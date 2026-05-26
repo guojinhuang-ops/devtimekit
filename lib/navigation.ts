@@ -99,6 +99,14 @@ export function getMenuSections(locale: LanguageCode): Record<NavCategoryKey, Na
           { title: 'UTC to Local', href: '/utc-to-local', description: 'Convert UTC to local time.', icon: Link2 },
           { title: 'Local to UTC', href: '/local-to-utc', description: 'Normalize local time to UTC.', icon: Hash }
         ]
+      },
+      {
+        title: 'Special Tools / Event Time Tools',
+        items: [
+          { title: 'World Cup 2026 Time Converter', href: '/world-cup-2026-time-converter', description: 'Convert match time across host and local zones.', icon: Globe },
+          { title: 'World Cup 2026 Countdown', href: '/world-cup-2026-countdown', description: 'Countdown to opening match and final.', icon: Timer },
+          { title: 'World Cup Schedule Time Zones', href: '/world-cup-2026-schedule-time-zones', description: 'View static schedule with timezone mapping.', icon: CalendarClock }
+        ]
       }
     ],
     encoding: [

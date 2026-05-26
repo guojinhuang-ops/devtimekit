@@ -36,6 +36,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   return (
     <article>
       <JsonLd data={buildWebPageJsonLd({ name: guide.title, path: `/guides/${guide.slug}`, description: guide.description })} />
+      <JsonLd data={{ '@context': 'https://schema.org', '@type': 'Article', headline: guide.title, description: guide.description, url: absoluteUrl(`/guides/${guide.slug}`) }} />
       <JsonLd data={buildFaqJsonLd(guide.faq)} />
       <JsonLd data={buildBreadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Guides', path: '/guides/unix-timestamp-guide' }, { name: guide.title, path: `/guides/${guide.slug}` }])} />
       <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Guides', href: '/guides/unix-timestamp-guide' }, { label: guide.title, href: `/guides/${guide.slug}` }]} />

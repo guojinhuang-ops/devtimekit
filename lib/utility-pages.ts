@@ -116,6 +116,85 @@ export const utilityPages: Record<string, UtilityPage> = {
       ...sharedTimeFaq
     ]
   },
+  '/world-cup-2026-time-converter': {
+    title: 'World Cup 2026 Time Converter',
+    path: '/world-cup-2026-time-converter',
+    description: 'World Cup 2026 time converter for match kickoff, host city timezone, UTC input, and local viewing time.',
+    keywords: [
+      'World Cup 2026 time converter',
+      'World Cup 2026 local time',
+      'FIFA World Cup timezone converter',
+      'convert World Cup match time to local time'
+    ],
+    kind: 'world-cup-2026-time-converter',
+    definition: [
+      'World Cup 2026 Time Converter helps you map a kickoff time from host city timezone or UTC into your local timezone. This is useful when matches are played across multiple North American host cities and you want reliable local watch times.',
+      'You can set a host city timezone, a viewer timezone, and a date-time value, then copy a clean conversion result. The page also provides quick calendar text so you can paste the event into your calendar workflow.',
+      'DevTimeKit is an independent time conversion tool and is not affiliated with FIFA.'
+    ],
+    steps: [
+      'Select a host city timezone or choose UTC input mode.',
+      'Enter the match date-time and select your local timezone.',
+      'Copy the local watch time or use the generated Add to Calendar text.'
+    ],
+    examples: [
+      'Convert a Los Angeles kickoff into Tokyo local viewing time.',
+      'Paste a UTC kickoff time and map it into your browser timezone.',
+      'Share one copied result with teammates in different regions.'
+    ],
+    useCases: [
+      'World Cup 2026 schedule local time checking.',
+      'FIFA World Cup local time planning for remote teams.',
+      'Cross-region event coordination with UTC as canonical input.'
+    ],
+    faq: sharedTimeFaq
+  },
+  '/world-cup-2026-countdown': {
+    title: 'World Cup 2026 Countdown',
+    path: '/world-cup-2026-countdown',
+    description: 'World Cup countdown with opening match and final timers in days, hours, minutes, and seconds by timezone.',
+    keywords: ['World Cup countdown', 'World Cup 2026 local time', 'FIFA World Cup countdown'],
+    kind: 'world-cup-2026-countdown',
+    definition: [
+      'World Cup 2026 Countdown shows time remaining until the opening match and the final match. The timer updates in real time and reflects your selected display timezone.',
+      'Use it for launch planning, team watch parties, and publication timing where exact day/hour/minute/second precision helps.',
+      'DevTimeKit is an independent time conversion tool and is not affiliated with FIFA.'
+    ],
+    steps: [
+      'Choose your display timezone.',
+      'Read both opening match and final countdown cards.',
+      'Use the values for planning reminders or event updates.'
+    ],
+    examples: [
+      'Track countdown in UTC for global team consistency.',
+      'Switch to local timezone to get region-specific watch timing.'
+    ],
+    useCases: ['Event planning', 'Reminder scheduling', 'Timezone-aware publication timing'],
+    faq: sharedTimeFaq
+  },
+  '/world-cup-2026-schedule-time-zones': {
+    title: 'World Cup 2026 Schedule Time Zones',
+    path: '/world-cup-2026-schedule-time-zones',
+    description: 'Static World Cup 2026 schedule time zones page with local conversion, host cities, and timezone notes.',
+    keywords: ['World Cup 2026 schedule time zones', 'World Cup timezone converter', 'FIFA World Cup local time'],
+    kind: 'world-cup-2026-schedule-time-zones',
+    definition: [
+      'This page provides static placeholder World Cup 2026 match data so you can preview schedule timezone conversion without backend fetches.',
+      'Each row includes host city and timezone context, then converts kickoff time into your selected timezone for local viewing.',
+      'DevTimeKit is an independent time conversion tool and is not affiliated with FIFA.'
+    ],
+    steps: [
+      'Pick your timezone for local display.',
+      'Review static match rows and host city timezone labels.',
+      'Copy local kickoff time for your own notes or calendar.'
+    ],
+    examples: [
+      'Compare Mexico City and Toronto host offsets quickly.',
+      'Use one timezone selector to normalize all listed matches.'
+    ],
+    useCases: ['World Cup timezone converter workflows', 'Cross-city kickoff comparisons', 'Local watch-time planning'],
+    faq: sharedTimeFaq
+  },
   '/json-formatter': {
     title: 'JSON Formatter',
     path: '/json-formatter',

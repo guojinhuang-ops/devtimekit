@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import FAQSection from '@/components/FAQSection';
+import JsonLd from '@/components/JsonLd';
 import { guidePages, getGuideBySlug } from '@/lib/guides';
-import { buildMetadata } from '@/lib/seo';
+import { absoluteUrl, buildBreadcrumbJsonLd, buildFaqJsonLd, buildMetadata } from '@/lib/seo';
 import { localePrefix, locales, type Locale } from '@/lib/i18n';
 import { tools } from '@/lib/tools';
 
@@ -27,6 +28,9 @@ export default async function LocalizedGuidePage({ params }: { params: Promise<{
 
   return (
     <article className="space-y-8">
+      <JsonLd data={{ '@context': 'https://schema.org', '@type': 'Article', headline: guide.title, description: guide.description, url: absoluteUrl(`${prefix}/guides/${guide.slug}`) }} />
+      <JsonLd data={buildFaqJsonLd(guide.faq)} />
+      <JsonLd data={buildBreadcrumbJsonLd([{ name: 'Home', path: `${prefix || '/'}` }, { name: 'Guides', path: `${prefix}/guides` }, { name: guide.title, path: `${prefix}/guides/${guide.slug}` }])} />
       <header className="card">
         <h1 className="text-3xl font-bold">{guide.title}</h1>
         <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">{guide.description}</p>
