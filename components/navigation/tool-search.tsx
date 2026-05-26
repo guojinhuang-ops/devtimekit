@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { guidePages } from '@/lib/guides';
@@ -9,6 +9,7 @@ import { localizedPath, type LanguageCode } from '@/lib/i18n';
 import { tools } from '@/lib/tools';
 
 export default function ToolSearch({ locale, compact = false }: { locale: LanguageCode; compact?: boolean }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [mounted, setMounted] = useState(false);
@@ -83,17 +84,24 @@ export default function ToolSearch({ locale, compact = false }: { locale: Langua
             <ul className="mt-3 h-[calc(100vh-120px)] space-y-1 overflow-y-auto sm:h-[56vh]">
               {results.map((item) => (
                 <li key={`${item.type}-${item.href}`}>
-                  <Link
-                    href={localizedPath(item.href, locale)}
-                    onClick={() => setOpen(false)}
-                    className="block rounded-xl px-3 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  <button
+                    type="button"
+                    onPointerDown={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      const target = localizedPath(item.href, locale);
+                      setOpen(false);
+                      setQuery('');
+                      router.push(target);
+                    }}
+                    className="block w-full rounded-xl px-3 py-3 text-left hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-sm font-medium">{item.title}</p>
                       <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] uppercase tracking-wide text-slate-600 dark:bg-slate-800 dark:text-slate-300">{item.type}</span>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400">{item.summary}</p>
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
