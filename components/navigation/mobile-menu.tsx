@@ -23,14 +23,13 @@ export default function MobileMenu({ locale, pathname, direction }: MobileMenuPr
   const topLinks = useMemo(
     () => [
       { href: localizedPath('/', locale), label: dictionary.nav.home },
-      { href: localizedPath('/unix-timestamp-converter', locale), label: getCategoryLabel(locale, 'time') },
-      { href: localizedPath('/about-unix-time', locale), label: getGuidesLabel(locale) }
+      { href: '/guides', label: getGuidesLabel(locale) }
     ],
     [dictionary.nav.home, locale]
   );
 
   return (
-    <div className="md:hidden">
+    <div className="xl:hidden">
       <button
         type="button"
         aria-expanded={open}

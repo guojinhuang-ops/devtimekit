@@ -44,7 +44,30 @@ export type UtilityKind =
   | 'sha256-generator'
   | 'sha512-generator'
   | 'hmac-generator'
-  | 'file-checksum';
+  | 'file-checksum'
+  | 'json-validator'
+  | 'json-diff'
+  | 'json-compare'
+  | 'json-schema-generator'
+  | 'json-path-tester'
+  | 'json-beautifier'
+  | 'uuid-validator'
+  | 'html-formatter'
+  | 'css-beautifier'
+  | 'sql-minifier'
+  | 'regex-cheat-sheet'
+  | 'markdown-preview'
+  | 'markdown-to-html'
+  | 'html-escape-unescape'
+  | 'bcrypt-generator'
+  | 'password-generator'
+  | 'random-string-generator'
+  | 'jwt-encoder'
+  | 'jwt-debugger'
+  | 'html-encode'
+  | 'html-decode'
+  | 'unicode-converter'
+  | 'ascii-converter';
 
 type ToolResult = {
   error: string;
@@ -308,6 +331,30 @@ function formatSql(input: string) {
     .trim();
 }
 
+function escapeHtml(value: string) {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function unescapeHtml(value: string) {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<')
+    .replace(/&amp;/g, '&');
+}
+
+function markdownToHtml(markdown: string) {
+  return markdown
+    .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.*)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code>$1</code>')
+    .replace(/\n/g, '<br />');
+}
+
 type TreeNodeProps = {
   label: string;
   value: unknown;
@@ -547,6 +594,61 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
         return { error: '', output: JSON.stringify(parsed, null, 2), rows: [{ label: 'Root Type', value: Array.isArray(parsed) ? 'Array' : typeof parsed }] };
       }
 
+      if (kind === 'json-validator') {
+        JSON.parse(input);
+        return { error: '', output: 'Valid JSON', rows: [{ label: 'Status', value: 'Valid' }] };
+      }
+
+      if (kind === 'json-beautifier') {
+        return { error: '', output: JSON.stringify(JSON.parse(input), null, 2), rows: [] };
+      }
+
+      if (kind === 'json-schema-generator') {
+        const walkSchema = (value: unknown): unknown => {
+          if (Array.isArray(value)) return { type: 'array', items: value.length ? walkSchema(value[0]) : {} };
+          if (value === null) return { type: 'null' };
+          if (typeof value === 'object') {
+            const properties: Record<string, unknown> = {};
+            const required: string[] = [];
+            Object.entries(value as Record<string, unknown>).forEach(([k, v]) => {
+              properties[k] = walkSchema(v);
+              required.push(k);
+            });
+            return { type: 'object', properties, required };
+          }
+          return { type: typeof value };
+        };
+        const parsed = JSON.parse(input);
+        const schema = walkSchema(parsed);
+        const payload = schema && typeof schema === 'object'
+          ? { $schema: 'https://json-schema.org/draft/2020-12/schema', ...(schema as Record<string, unknown>) }
+          : { $schema: 'https://json-schema.org/draft/2020-12/schema', type: typeof parsed };
+        return { error: '', output: JSON.stringify(payload, null, 2), rows: [] };
+      }
+
+      if (kind === 'json-path-tester') {
+        const parsed = JSON.parse(input);
+        const path = secondary.trim().replace(/^\./, '');
+        const value = path ? path.split('.').reduce<unknown>((acc, key) => (acc && typeof acc === 'object' ? (acc as Record<string, unknown>)[key] : undefined), parsed) : parsed;
+        return { error: '', output: JSON.stringify(value, null, 2), rows: [{ label: 'Path', value: path || 'root' }] };
+      }
+
+      if (kind === 'json-compare' || kind === 'json-diff') {
+        const left = JSON.parse(input);
+        const right = JSON.parse(secondary);
+        const leftStr = JSON.stringify(left);
+        const rightStr = JSON.stringify(right);
+        if (kind === 'json-compare') {
+          return { error: '', output: leftStr === rightStr ? 'Equal' : 'Not equal', rows: [{ label: 'Result', value: leftStr === rightStr ? 'Equal' : 'Not equal' }] };
+        }
+        const leftKeys = Object.keys(left || {});
+        const rightKeys = Object.keys(right || {});
+        const onlyLeft = leftKeys.filter((key) => !rightKeys.includes(key));
+        const onlyRight = rightKeys.filter((key) => !leftKeys.includes(key));
+        const changed = leftKeys.filter((key) => rightKeys.includes(key) && JSON.stringify((left as Record<string, unknown>)[key]) !== JSON.stringify((right as Record<string, unknown>)[key]));
+        return { error: '', output: JSON.stringify({ onlyLeft, onlyRight, changed }, null, 2), rows: [] };
+      }
+
       if (kind === 'jwt-decoder') {
         const parts = input.split('.');
         if (parts.length < 2) throw new Error('Invalid JWT format.');
@@ -562,6 +664,40 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
 
       if (kind === 'sql-formatter') {
         return { error: '', output: formatSql(input), rows: [] };
+      }
+
+      if (kind === 'sql-minifier') return { error: '', output: input.replace(/\s+/g, ' ').trim(), rows: [] };
+      if (kind === 'html-formatter') return { error: '', output: input.replace(/></g, '>\n<'), rows: [] };
+      if (kind === 'css-beautifier') return { error: '', output: input.replace(/\{/g, ' {\n  ').replace(/;/g, ';\n  ').replace(/\}/g, '\n}\n').replace(/\n\s+\n/g, '\n').trim(), rows: [] };
+      if (kind === 'uuid-validator') return { error: '', output: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.trim()) ? 'Valid UUID' : 'Invalid UUID', rows: [] };
+      if (kind === 'regex-cheat-sheet') return { error: '', output: '^ start\n$ end\n\\d digit\n\\w word\n[a-z] range\n.+ any chars', rows: [] };
+      if (kind === 'markdown-to-html' || kind === 'markdown-preview') return { error: '', output: markdownToHtml(input), rows: [] };
+      if (kind === 'html-escape-unescape') return { error: '', output: secondary === 'unescape' ? unescapeHtml(input) : escapeHtml(input), rows: [] };
+      if (kind === 'html-encode') return { error: '', output: escapeHtml(input), rows: [] };
+      if (kind === 'html-decode') return { error: '', output: unescapeHtml(input), rows: [] };
+      if (kind === 'unicode-converter') return { error: '', output: Array.from(input).map((c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`).join(''), rows: [] };
+      if (kind === 'ascii-converter') return { error: '', output: Array.from(input).map((c) => c.charCodeAt(0)).join(' '), rows: [] };
+      if (kind === 'password-generator' || kind === 'random-string-generator') {
+        const chars = kind === 'password-generator' ? 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const length = Number(secondary) || 16;
+        const bytes = crypto.getRandomValues(new Uint32Array(length));
+        const out = Array.from(bytes).map((n) => chars[n % chars.length]).join('');
+        return { error: '', output: out, rows: [{ label: 'Length', value: String(length) }] };
+      }
+      if (kind === 'bcrypt-generator') return { error: '', output: 'Use /bcrypt-generator with bcryptjs integration in next update.', rows: [{ label: 'Status', value: 'Planned secure hash flow' }] };
+      if (kind === 'jwt-encoder') {
+        const payload = JSON.parse(input);
+        const header = { alg: 'none', typ: 'JWT' };
+        const enc = (v: unknown) => btoa(unescape(encodeURIComponent(JSON.stringify(v)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+        return { error: '', output: `${enc(header)}.${enc(payload)}.`, rows: [{ label: 'Type', value: 'Unsigned JWT (alg=none)' }] };
+      }
+      if (kind === 'jwt-debugger') {
+        const parts = input.split('.');
+        if (parts.length < 2) throw new Error('Invalid JWT format.');
+        const decode = (part: string) => JSON.parse(decodeURIComponent(escape(atob(part.replace(/-/g, '+').replace(/_/g, '/')))));
+        const payload = decode(parts[1]);
+        const exp = typeof payload.exp === 'number' ? new Date(payload.exp * 1000).toISOString() : 'N/A';
+        return { error: '', output: JSON.stringify(payload, null, 2), rows: [{ label: 'exp (ISO)', value: exp }] };
       }
 
       if (kind === 'base64-encode') return { error: '', output: encodeBase64(input), rows: [] };
@@ -616,6 +752,12 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
 
   const jsonKinds = new Set([
     'json-formatter',
+    'json-validator',
+    'json-diff',
+    'json-compare',
+    'json-schema-generator',
+    'json-path-tester',
+    'json-beautifier',
     'json-viewer',
     'json-minifier',
     'json-escape-unescape',
@@ -704,6 +846,12 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
             </button>
           ) : null}
 
+          {kind === 'html-escape-unescape' ? (
+            <button type="button" onClick={() => setSecondary((prev) => (prev === 'unescape' ? '' : 'unescape'))} className="rounded-md border px-2 py-1 text-xs">
+              {secondary === 'unescape' ? 'Mode: Unescape' : 'Mode: Escape'}
+            </button>
+          ) : null}
+
           {kind === 'json-to-xml' ? <input value={rootName} onChange={(event) => setRootName(event.target.value || 'root')} placeholder="Root name" className="rounded-md border px-2 py-1 text-xs" /> : null}
 
           {kind === 'csv-to-json' ? (
@@ -715,12 +863,13 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
           ) : null}
 
           {kind === 'hash-generator' ? <button type="button" onClick={generateHashes} className="rounded-md border px-2 py-1 text-xs">Generate Hashes</button> : null}
+          {kind === 'password-generator' || kind === 'random-string-generator' ? <input value={secondary} onChange={(event) => setSecondary(event.target.value)} placeholder="Length (default 16)" className="rounded-md border px-2 py-1 text-xs" /> : null}
         </div>
 
-        {kind === 'regex-tester' ? (
+        {kind === 'regex-tester' || kind === 'json-diff' || kind === 'json-compare' || kind === 'json-path-tester' ? (
           <label className="block text-sm font-medium">
-            Sample text
-            <textarea value={secondary} onChange={(event) => setSecondary(event.target.value)} className="mt-2 min-h-32 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800" placeholder="Paste text to test against the regular expression" />
+            {kind === 'regex-tester' ? 'Sample text' : kind === 'json-path-tester' ? 'JSON path (example: user.name)' : 'Second JSON input'}
+            <textarea value={secondary} onChange={(event) => setSecondary(event.target.value)} className="mt-2 min-h-32 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800" placeholder={kind === 'regex-tester' ? 'Paste text to test against the regular expression' : kind === 'json-path-tester' ? 'user.name' : '{"name":"DevTimeKit"}'} />
           </label>
         ) : null}
 
@@ -746,7 +895,9 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
                 {kind === 'json-to-csv' ? <button type="button" onClick={() => downloadFile('output.csv', result.output, 'text/csv')} className="rounded-md border px-2 py-1 text-xs">Download .csv</button> : null}
               </div>
             </div>
-            {result.highlighted ? (
+            {kind === 'markdown-preview' || kind === 'markdown-to-html' ? (
+              <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: result.output }} />
+            ) : result.highlighted ? (
               <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-sm" dangerouslySetInnerHTML={{ __html: result.highlighted }} />
             ) : (
               <pre className="whitespace-pre-wrap break-words font-mono text-sm">{result.output}</pre>

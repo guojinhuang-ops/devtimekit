@@ -118,10 +118,17 @@ export const guidePages: GuidePage[] = [
   makeGuide('md5-vs-sha256', 'MD5 vs SHA256: Which Hash Should You Use?', 'Compare MD5 and SHA256 across security, compatibility, and engineering use cases.', 'Hash Guides', 'MD5', 'SHA256', ['/md5-generator', '/sha256-generator', '/sha512-generator', '/hmac-generator']),
   makeGuide('what-is-epoch-time', 'What Is Epoch Time? Practical Developer Guide', 'Understand epoch time, UTC references, and unit conversion mistakes in modern applications.', 'Time Guides', 'Epoch time', 'Unix timestamp', ['/epoch-converter', '/current-unix-timestamp', '/unix-time-in-milliseconds', '/iso8601-parser']),
   makeGuide('utc-vs-local-time', 'UTC vs Local Time: Developer Implementation Guide', 'Learn how to store UTC safely and render local time accurately across regions and DST changes.', 'Time Guides', 'UTC time', 'Local time', ['/utc-to-local', '/local-to-utc', '/utc-time-now', '/iso-8601-converter']),
-  makeGuide('base64-explained', 'Base64 Explained for Developers', 'Understand Base64 encoding, decoding, limits, and safe usage in API and config workflows.', 'Encoding Guides', 'Base64', 'encryption', ['/base64-encode', '/base64-decode', '/url-encode', '/url-decode'])
+  makeGuide('base64-explained', 'Base64 Explained for Developers', 'Understand Base64 encoding, decoding, limits, and safe usage in API and config workflows.', 'Encoding Guides', 'Base64', 'encryption', ['/base64-encode', '/base64-decode', '/url-encode', '/url-decode']),
+  makeGuide('json-vs-yaml', 'JSON vs YAML for Developers', 'Compare JSON and YAML for APIs, configs, and CI workflows.', 'JSON Guides', 'JSON', 'YAML', ['/json-formatter', '/json-to-yaml', '/yaml-to-json', '/json-validator']),
+  makeGuide('what-is-base64', 'What Is Base64? Developer Guide', 'Learn what Base64 is, when to use it, and common mistakes.', 'Encoding Guides', 'Base64', 'binary transport', ['/base64-encode', '/base64-decode', '/url-encode', '/html-encode']),
+  makeGuide('how-md5-works', 'How MD5 Works', 'Understand the MD5 hash process and practical non-security use cases.', 'Security Guides', 'MD5', 'SHA256', ['/md5-generator', '/sha256-generator', '/hmac-generator', '/file-checksum']),
+  makeGuide('what-is-sha256', 'What Is SHA256?', 'Understand SHA256 hashing and where it fits in modern systems.', 'Security Guides', 'SHA256', 'MD5', ['/sha256-generator', '/sha512-generator', '/hmac-generator', '/file-checksum']),
+  makeGuide('json-api-best-practices', 'JSON API Best Practices', 'Design robust JSON APIs with validation and predictable schemas.', 'JSON Guides', 'JSON API design', 'schema validation', ['/json-validator', '/json-schema-generator', '/json-formatter', '/json-diff']),
+  makeGuide('regex-examples', 'Regex Examples for Developers', 'Learn practical regex examples for validation and parsing.', 'Developer Guides', 'Regex', 'parser-based validation', ['/regex-tester', '/regex-cheat-sheet', '/json-path-tester', '/query-string-to-json']),
+  makeGuide('iso8601-explained', 'ISO 8601 Explained', 'Understand ISO 8601 datetime format and timezone-safe usage patterns.', 'Time Guides', 'ISO 8601', 'Unix timestamp', ['/iso8601-parser', '/iso-8601-converter', '/utc-to-local', '/local-to-utc']),
+  makeGuide('unix-timestamp-in-javascript', 'Unix Timestamp in JavaScript', 'Handle Unix timestamps safely in JavaScript and TypeScript codebases.', 'Time Guides', 'Unix timestamp in JavaScript', 'Date objects', ['/javascript-timestamp', '/unix-timestamp-converter', '/current-timestamp-milliseconds', '/timestamp-to-date'])
 ];
 
 export function getGuideBySlug(slug: string) {
   return guidePages.find((guide) => guide.slug === slug);
 }
-

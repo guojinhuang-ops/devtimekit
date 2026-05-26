@@ -23,7 +23,7 @@ const faqItems = [
 ];
 
 export const metadata: Metadata = buildMetadata({
-  title: 'DevTimeKit Developer Tools - Timestamp, JSON, Encoding, Hash Utilities',
+  title: 'DevTimeKit Developer Utility Platform - Time, JSON, Security, Encoding',
   description:
     'Browser-based developer tools for timestamps, JSON formatting, Base64, URL encoding, hash generation, and API debugging workflows.',
   path: '/'
@@ -42,7 +42,7 @@ export default function HomePage() {
   ]
     .map((href) => tools.find((tool) => tool.href === href))
     .filter((tool): tool is (typeof tools)[number] => Boolean(tool));
-  const categories = ['Time', 'Encoding', 'Developer', 'Hash'] as const;
+  const categories = ['Time', 'JSON', 'Encoding', 'Security', 'Developer'] as const;
 
   return (
     <>
@@ -53,7 +53,7 @@ export default function HomePage() {
 
       <section className="card">
         <p className="text-sm font-medium text-brand-700 dark:text-brand-100">Privacy-First Developer Toolkit</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight">DevTimeKit: Online Tools for Time, JSON, Encoding, and Hash Workflows</h1>
+        <h1 className="mt-2 text-4xl font-bold tracking-tight">DevTimeKit: Developer Utility Hub for Time, JSON, Security, and Encoding</h1>
         <p className="mt-3 max-w-3xl text-base text-slate-700 dark:text-slate-300">
           DevTimeKit helps developers convert timestamps, format JSON, generate hashes, and inspect data formats quickly in the browser. Most tools run client-side to keep workflows fast and privacy-friendly.
         </p>

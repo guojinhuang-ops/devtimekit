@@ -7,9 +7,11 @@ import { tools } from '@/lib/tools';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
+  const guideRoutes = ['/guides', ...guidePages.map((guide) => `/guides/${guide.slug}`)];
   const staticRoutes = ['/about', '/privacy', '/terms', '/contact'];
-  const localizedRoutes = ['/', ...tools.map((tool) => tool.href)];
+  const toolHubRoutes = ['/tools', '/tools/time', '/tools/json', '/tools/security', '/tools/encoding', '/tools/developer'];
+  const localizedGuideRoutes = ['/guides', ...guidePages.map((guide) => `/guides/${guide.slug}`)];
+  const localizedRoutes = ['/', ...tools.map((tool) => tool.href), ...toolHubRoutes, ...localizedGuideRoutes];
   const routes = [
     ...allLanguageCodes.flatMap((locale) => localizedRoutes.map((route) => localizedPath(route, locale))),
     ...guideRoutes,

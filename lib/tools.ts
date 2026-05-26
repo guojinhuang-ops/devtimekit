@@ -2,7 +2,7 @@ export type ToolItem = {
   title: string;
   href: string;
   summary: string;
-  category?: 'Time' | 'Text' | 'Encoding' | 'Developer' | 'Hash';
+  category?: 'Time' | 'Text' | 'Encoding' | 'Developer' | 'Hash' | 'Security' | 'JSON';
 };
 
 export const tools: ToolItem[] = [
@@ -172,38 +172,61 @@ export const tools: ToolItem[] = [
     title: 'MD5 Generator',
     href: '/md5-generator',
     summary: 'Generate MD5 128-bit/64-bit and 32/16 uppercase and lowercase hashes from text.',
-    category: 'Hash'
+    category: 'Security'
   },
   {
     title: 'SHA1 Generator',
     href: '/sha1-generator',
     summary: 'Generate SHA1 hash values from input text in real time.',
-    category: 'Hash'
+    category: 'Security'
   },
   {
     title: 'SHA256 Generator',
     href: '/sha256-generator',
     summary: 'Generate SHA256 hash values from input text in real time.',
-    category: 'Hash'
+    category: 'Security'
   },
   {
     title: 'SHA512 Generator',
     href: '/sha512-generator',
     summary: 'Generate SHA512 hash values from input text in real time.',
-    category: 'Hash'
+    category: 'Security'
   },
   {
     title: 'HMAC Generator',
     href: '/hmac-generator',
     summary: 'Generate HMAC hashes with MD5, SHA1, SHA256, or SHA512.',
-    category: 'Hash'
+    category: 'Security'
   },
   {
     title: 'File Checksum',
     href: '/file-checksum',
     summary: 'Calculate MD5, SHA1, SHA256, and SHA512 checksums in your browser.',
-    category: 'Hash'
+    category: 'Security'
   },
+  { title: 'JSON Validator', href: '/json-validator', summary: 'Validate JSON syntax and show precise parse errors.', category: 'JSON' },
+  { title: 'JSON Diff', href: '/json-diff', summary: 'Diff two JSON documents and inspect changed keys.', category: 'JSON' },
+  { title: 'JSON Compare', href: '/json-compare', summary: 'Compare two JSON values and see equality details.', category: 'JSON' },
+  { title: 'JSON Schema Generator', href: '/json-schema-generator', summary: 'Generate JSON Schema from sample JSON input.', category: 'JSON' },
+  { title: 'JSON Path Tester', href: '/json-path-tester', summary: 'Test dot-path queries against JSON content quickly.', category: 'JSON' },
+  { title: 'JSON Beautifier', href: '/json-beautifier', summary: 'Beautify JSON with readable indentation for debugging.', category: 'JSON' },
+  { title: 'UUID Validator', href: '/uuid-validator', summary: 'Validate UUID string formats including v4 style values.', category: 'Developer' },
+  { title: 'HTML Formatter', href: '/html-formatter', summary: 'Format HTML markup with cleaner indentation and structure.', category: 'Developer' },
+  { title: 'CSS Beautifier', href: '/css-beautifier', summary: 'Beautify CSS declarations into readable multi-line style.', category: 'Developer' },
+  { title: 'SQL Minifier', href: '/sql-minifier', summary: 'Minify SQL by removing extra whitespace and line breaks.', category: 'Developer' },
+  { title: 'Regex Cheat Sheet', href: '/regex-cheat-sheet', summary: 'Quick reference for common regular expression patterns.', category: 'Developer' },
+  { title: 'Markdown Preview', href: '/markdown-preview', summary: 'Preview Markdown rendering and inspect generated HTML.', category: 'Developer' },
+  { title: 'Markdown to HTML', href: '/markdown-to-html', summary: 'Convert Markdown text into HTML output instantly.', category: 'Developer' },
+  { title: 'HTML Escape / Unescape', href: '/html-escape-unescape', summary: 'Escape or unescape HTML entities safely in-browser.', category: 'Encoding' },
+  { title: 'bcrypt Generator', href: '/bcrypt-generator', summary: 'Generate bcrypt hashes for password testing workflows.', category: 'Security' },
+  { title: 'Password Generator', href: '/password-generator', summary: 'Generate strong random passwords with length controls.', category: 'Security' },
+  { title: 'Random String Generator', href: '/random-string-generator', summary: 'Generate random strings for tests, IDs, and fixtures.', category: 'Security' },
+  { title: 'JWT Encoder', href: '/jwt-encoder', summary: 'Encode JWT header and payload to build unsigned tokens.', category: 'Security' },
+  { title: 'JWT Debugger', href: '/jwt-debugger', summary: 'Inspect JWT claims, expiration, and common token issues.', category: 'Security' },
+  { title: 'HTML Encode', href: '/html-encode', summary: 'Encode unsafe HTML characters into entity-safe output.', category: 'Encoding' },
+  { title: 'HTML Decode', href: '/html-decode', summary: 'Decode HTML entities back into readable text values.', category: 'Encoding' },
+  { title: 'Unicode Converter', href: '/unicode-converter', summary: 'Convert plain text to Unicode escape sequences and back.', category: 'Encoding' },
+  { title: 'ASCII Converter', href: '/ascii-converter', summary: 'Convert text to ASCII codes and inspect character mapping.', category: 'Encoding' },
   {
     title: 'SQL Formatter',
     href: '/sql-formatter',

@@ -133,20 +133,20 @@ export default async function LocalizedPage({ params }: { params: Promise<PagePa
       ? 'list-decimal space-y-2 pr-5 text-sm leading-7 text-slate-700 dark:text-slate-300'
       : 'list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-700 dark:text-slate-300';
   const categoryLabelsByLocale: Record<string, Record<string, string>> = {
-    en: { Time: 'Time', Encoding: 'Encoding', Developer: 'Developer', Hash: 'Hash' },
-    zh: { Time: '时间', Encoding: '编码', Developer: '开发者', Hash: 'Hash' },
-    'zh-TW': { Time: '時間', Encoding: '編碼', Developer: '開發者', Hash: 'Hash' },
-    ja: { Time: '時間', Encoding: 'エンコード', Developer: '開発者', Hash: 'Hash' },
-    es: { Time: 'Tiempo', Encoding: 'Codificacion', Developer: 'Desarrollador', Hash: 'Hash' },
-    vi: { Time: 'Thoi gian', Encoding: 'Ma hoa', Developer: 'Lap trinh', Hash: 'Hash' },
-    ko: { Time: '시간', Encoding: '인코딩', Developer: '개발자', Hash: '해시' },
-    ar: { Time: 'الوقت', Encoding: 'الترميز', Developer: 'المطور', Hash: 'هاش' },
-    hi: { Time: 'समय', Encoding: 'एन्कोडिंग', Developer: 'डेवलपर', Hash: 'हैश' }
+    en: { Time: 'Time', JSON: 'JSON', Encoding: 'Encoding', Security: 'Security', Developer: 'Developer' },
+    zh: { Time: '时间', JSON: 'JSON', Encoding: '编码', Security: '安全', Developer: '开发者' },
+    'zh-TW': { Time: '時間', JSON: 'JSON', Encoding: '編碼', Security: '安全', Developer: '開發者' },
+    ja: { Time: '時間', JSON: 'JSON', Encoding: 'エンコード', Security: 'セキュリティ', Developer: '開発者' },
+    es: { Time: 'Tiempo', JSON: 'JSON', Encoding: 'Codificacion', Security: 'Seguridad', Developer: 'Desarrollador' },
+    vi: { Time: 'Thoi gian', JSON: 'JSON', Encoding: 'Ma hoa', Security: 'Bao mat', Developer: 'Lap trinh' },
+    ko: { Time: '시간', JSON: 'JSON', Encoding: '인코딩', Security: '보안', Developer: '개발자' },
+    ar: { Time: 'الوقت', JSON: 'JSON', Encoding: 'الترميز', Security: 'الامان', Developer: 'المطور' },
+    hi: { Time: 'समय', JSON: 'JSON', Encoding: 'एन्कोडिंग', Security: 'सिक्योरिटी', Developer: 'डेवलपर' }
   };
   const categoryLabels = categoryLabelsByLocale[dictionary.locale];
   if (path === '/') {
     const featured = tools.slice(0, 9);
-    const categories = ['Time', 'Encoding', 'Developer', 'Hash'] as const;
+    const categories = ['Time', 'JSON', 'Encoding', 'Security', 'Developer'] as const;
 
     return (
       <div>
