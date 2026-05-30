@@ -195,6 +195,78 @@ export const utilityPages: Record<string, UtilityPage> = {
     useCases: ['World Cup timezone converter workflows', 'Cross-city kickoff comparisons', 'Local watch-time planning'],
     faq: sharedTimeFaq
   },
+  '/ai-token-counter': {
+    title: 'AI Token Counter',
+    path: '/ai-token-counter',
+    description: 'Estimate AI token usage for prompts with character, word, and GPT-style token counts in browser.',
+    keywords: ['AI token counter', 'ChatGPT token counter', 'GPT token counter', 'prompt token counter'],
+    kind: 'ai-token-counter',
+    definition: ['AI Token Counter provides a browser-side estimate of GPT-style token usage from your text input.'],
+    steps: ['Paste prompt text.', 'Review character, word, and estimated token counts.', 'Copy results for planning context windows.'],
+    examples: ['Estimate token impact before sending a long prompt.'],
+    useCases: ['Prompt length planning', 'Context window budgeting', 'Chat workflow tuning'],
+    faq: [{ q: 'Is this exact tokenizer output?', a: 'No. This is an approximate browser-side estimate, not an official tokenizer.' }]
+  },
+  '/prompt-formatter': {
+    title: 'Prompt Formatter',
+    path: '/prompt-formatter',
+    description: 'Format unstructured prompts into role, task, context, constraints, and output sections.',
+    keywords: ['prompt formatter', 'AI prompt formatter', 'ChatGPT prompt formatter', 'prompt optimizer'],
+    kind: 'prompt-formatter',
+    definition: ['Prompt Formatter restructures rough text into a clear prompt template.'],
+    steps: ['Paste rough prompt text.', 'Generate structured format.', 'Copy formatted prompt.'],
+    examples: ['Turn a one-line request into a high-clarity structured prompt.'],
+    useCases: ['Prompt quality improvements', 'Team prompt standards', 'Reusable templates'],
+    faq: [{ q: 'Does formatting improve model answers?', a: 'Clear structure usually improves consistency and output quality.' }]
+  },
+  '/prompt-template-generator': {
+    title: 'Prompt Template Generator',
+    path: '/prompt-template-generator',
+    description: 'Generate AI prompt templates for coding, SEO, translation, product planning, and data analysis.',
+    keywords: ['prompt template generator', 'ChatGPT prompt templates', 'AI prompt generator'],
+    kind: 'prompt-template-generator',
+    definition: ['Generate scenario-specific prompt templates with configurable goal and output format.'],
+    steps: ['Choose scenario.', 'Enter topic or goal.', 'Copy generated prompt template.'],
+    examples: ['Build a coding prompt template for bug triage.'],
+    useCases: ['Prompt reuse', 'Process standardization', 'Faster drafting'],
+    faq: [{ q: 'Can I customize output format?', a: 'Yes. Add the output structure you want in the template body.' }]
+  },
+  '/ai-system-prompt-builder': {
+    title: 'AI System Prompt Builder',
+    path: '/ai-system-prompt-builder',
+    description: 'Build system prompts for AI apps, chatbots, and internal assistant tools with role and rule controls.',
+    keywords: ['system prompt builder', 'AI system prompt generator', 'chatbot system prompt'],
+    kind: 'ai-system-prompt-builder',
+    definition: ['Create structured system prompts with assistant role, goal, rules, tone, and output requirements.'],
+    steps: ['Enter role and goal.', 'Add rules and tone.', 'Copy generated system prompt.'],
+    examples: ['Build a support-assistant system prompt with strict response policy.'],
+    useCases: ['Chatbot setup', 'Internal AI tooling', 'Prompt governance'],
+    faq: [{ q: 'Is this for API usage?', a: 'Yes. Output is suitable for AI apps, chatbots, and internal tools.' }]
+  },
+  '/markdown-to-prompt': {
+    title: 'Markdown to Prompt',
+    path: '/markdown-to-prompt',
+    description: 'Convert markdown notes into clean AI prompt text while preserving headings, lists, and code content.',
+    keywords: ['markdown to prompt', 'convert markdown to prompt', 'AI prompt from markdown'],
+    kind: 'markdown-to-prompt',
+    definition: ['Transform markdown documents into prompt-friendly plain text for model input.'],
+    steps: ['Paste markdown.', 'Convert to prompt text.', 'Copy output for AI tools.'],
+    examples: ['Turn README content into a model instruction block.'],
+    useCases: ['Doc-to-prompt workflows', 'Knowledge transfer', 'Prompt prep'],
+    faq: [{ q: 'Will headings and lists be kept?', a: 'Yes. Structural readability is preserved while extra formatting is reduced.' }]
+  },
+  '/ai-text-cleaner': {
+    title: 'AI Text Cleaner',
+    path: '/ai-text-cleaner',
+    description: 'Clean prompt text for ChatGPT, Claude, and Gemini by normalizing spacing, quotes, and line breaks.',
+    keywords: ['AI text cleaner', 'prompt text cleaner', 'clean text for ChatGPT', 'remove extra spaces online'],
+    kind: 'ai-text-cleaner',
+    definition: ['Clean and normalize text before model submission to improve parsing clarity.'],
+    steps: ['Paste text.', 'Apply cleaner output.', 'Copy normalized prompt text.'],
+    examples: ['Remove extra blank lines and normalize smart quotes.'],
+    useCases: ['Prompt cleanup', 'Input normalization', 'Cross-tool copy consistency'],
+    faq: [{ q: 'Does cleaner remove markdown formatting?', a: 'Yes, this tool can reduce markdown markers for plain prompt text.' }]
+  },
   '/json-formatter': {
     title: 'JSON Formatter',
     path: '/json-formatter',

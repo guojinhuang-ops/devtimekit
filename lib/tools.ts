@@ -163,6 +163,42 @@ export const tools: ToolItem[] = [
     category: 'Developer'
   },
   {
+    title: 'AI Token Counter',
+    href: '/ai-token-counter',
+    summary: 'Estimate GPT-style token usage from text with character and word counts.',
+    category: 'Developer'
+  },
+  {
+    title: 'Prompt Formatter',
+    href: '/prompt-formatter',
+    summary: 'Format rough prompts into structured role-task-context-constraints output.',
+    category: 'Developer'
+  },
+  {
+    title: 'Prompt Template Generator',
+    href: '/prompt-template-generator',
+    summary: 'Generate reusable prompt templates for coding, SEO, translation, and analysis tasks.',
+    category: 'Developer'
+  },
+  {
+    title: 'AI System Prompt Builder',
+    href: '/ai-system-prompt-builder',
+    summary: 'Build system prompts for chatbots, AI apps, and internal assistant workflows.',
+    category: 'Developer'
+  },
+  {
+    title: 'Markdown to Prompt',
+    href: '/markdown-to-prompt',
+    summary: 'Convert markdown notes into AI-friendly prompt text while preserving structure.',
+    category: 'Developer'
+  },
+  {
+    title: 'AI Text Cleaner',
+    href: '/ai-text-cleaner',
+    summary: 'Clean and normalize prompt text before sending to ChatGPT, Claude, or Gemini.',
+    category: 'Developer'
+  },
+  {
     title: 'Cron Expression Generator',
     href: '/cron-expression-generator',
     summary: 'Build common cron expressions and read their schedule meaning.',

@@ -194,6 +194,17 @@ export function getMenuSections(locale: LanguageCode): Record<NavCategoryKey, Na
           { title: 'CSS Beautifier', href: '/css-beautifier', description: 'Beautify CSS declarations.', icon: Code2 },
           { title: 'SQL Minifier', href: '/sql-minifier', description: 'Minify SQL statements.', icon: Binary }
         ]
+      },
+      {
+        title: 'AI Tools',
+        items: [
+          { title: 'AI Token Counter', href: '/ai-token-counter', description: 'Estimate GPT-style tokens from text.', icon: Binary },
+          { title: 'Prompt Formatter', href: '/prompt-formatter', description: 'Structure prompts with role/task/context.', icon: Braces },
+          { title: 'Prompt Template Generator', href: '/prompt-template-generator', description: 'Generate reusable prompt templates.', icon: Workflow },
+          { title: 'AI System Prompt Builder', href: '/ai-system-prompt-builder', description: 'Build system prompts for chatbots.', icon: Shield },
+          { title: 'Markdown to Prompt', href: '/markdown-to-prompt', description: 'Convert markdown to AI-friendly prompt text.', icon: Code2 },
+          { title: 'AI Text Cleaner', href: '/ai-text-cleaner', description: 'Clean prompt text for AI models.', icon: CheckCheck }
+        ]
       }
     ],
     hash: [

@@ -7,6 +7,7 @@ import { tools } from '@/lib/tools';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const today = new Date().toISOString().slice(0, 10);
   const guideRoutes = ['/guides', ...guidePages.map((guide) => `/guides/${guide.slug}`)];
   const staticRoutes = ['/about', '/privacy', '/terms', '/contact', '/timezone-converter'];
   const toolHubRoutes = ['/tools', '/tools/time', '/tools/json', '/tools/security', '/tools/encoding', '/tools/developer'];
@@ -20,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return routes.map((route) => ({
     url: `${BASE_URL}${route}`,
-    lastModified: new Date(),
+    lastModified: today,
     changeFrequency: 'weekly',
     priority: route === '/' ? 1 : 0.8
   }));

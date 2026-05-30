@@ -68,6 +68,12 @@ export type UtilityKind =
   | 'html-decode'
   | 'unicode-converter'
   | 'ascii-converter'
+  | 'ai-token-counter'
+  | 'prompt-formatter'
+  | 'prompt-template-generator'
+  | 'ai-system-prompt-builder'
+  | 'markdown-to-prompt'
+  | 'ai-text-cleaner'
   | 'world-cup-2026-time-converter'
   | 'world-cup-2026-countdown'
   | 'world-cup-2026-schedule-time-zones';
@@ -515,6 +521,88 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
       if (kind === 'uuid-generator') {
         const id = uuidValue;
         return { error: '', output: id, rows: [] };
+      }
+
+      if (kind === 'ai-token-counter') {
+        const chars = input.length;
+        const words = input.trim() ? input.trim().split(/\s+/).length : 0;
+        const cjkChars = (input.match(/[\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]/g) || []).length;
+        const nonCjkChars = chars - cjkChars;
+        const estimatedTokens = Math.max(0, Math.round(nonCjkChars / 4 + cjkChars / 1.5));
+        return {
+          error: '',
+          output: `Estimated GPT-style tokens: ${estimatedTokens}`,
+          rows: [
+            { label: 'Characters', value: String(chars) },
+            { label: 'Words', value: String(words) },
+            { label: 'Estimated Tokens', value: String(estimatedTokens) },
+            { label: 'Note', value: 'Approximate browser-side estimate, not official tokenizer.' }
+          ]
+        };
+      }
+
+      if (kind === 'prompt-formatter') {
+        const lines = input.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        const task = lines[0] ?? 'Describe the task clearly.';
+        const context = lines.slice(1).join(' ') || 'No extra context provided.';
+        const formatted = [
+          'Role: You are an expert assistant for this task.',
+          `Task: ${task}`,
+          `Context: ${context}`,
+          'Constraints: Be concise, accurate, and explicit about assumptions.',
+          'Output Format: Provide bullet points followed by a short final answer.'
+        ].join('\n');
+        return { error: '', output: formatted, rows: [] };
+      }
+
+      if (kind === 'prompt-template-generator') {
+        const scenario = secondary || 'Coding';
+        const topic = input || 'Topic';
+        const template = [
+          `Scenario: ${scenario}`,
+          `Goal: Help with ${topic}`,
+          'Context: [Add background, audience, and constraints here]',
+          'Requirements: [List must-have points]',
+          'Output format: [Specify table, bullets, JSON, or step-by-step]',
+          'Quality bar: Be factual, concise, and practical.'
+        ].join('\n');
+        return { error: '', output: template, rows: [] };
+      }
+
+      if (kind === 'ai-system-prompt-builder') {
+        const [role = '', goal = '', rules = '', tone = '', outputFormat = ''] = input.split(/\r?\n/);
+        const systemPrompt = [
+          `You are: ${role || 'an AI assistant'}`,
+          `Goal: ${goal || 'help the user complete tasks effectively'}`,
+          `Rules: ${rules || 'be accurate, transparent, and safe'}`,
+          `Tone: ${tone || 'clear and professional'}`,
+          `Output format: ${outputFormat || 'structured bullet points'}`,
+          'This prompt is suitable for AI apps, chatbots, and internal tools.'
+        ].join('\n');
+        return { error: '', output: systemPrompt, rows: [] };
+      }
+
+      if (kind === 'markdown-to-prompt') {
+        const cleaned = input
+          .replace(/```[\s\S]*?```/g, (block) => block.replace(/```/g, '').trim())
+          .replace(/^#{1,6}\s*/gm, '')
+          .replace(/^\s*[-*+]\s+/gm, '- ')
+          .replace(/\r/g, '')
+          .trim();
+        return { error: '', output: cleaned, rows: [] };
+      }
+
+      if (kind === 'ai-text-cleaner') {
+        const cleaned = input
+          .replace(/[“”]/g, '"')
+          .replace(/[‘’]/g, "'")
+          .replace(/[ \t]+/g, ' ')
+          .replace(/\n{3,}/g, '\n\n')
+          .split('\n')
+          .map((line) => line.trim())
+          .join('\n')
+          .replace(/[#*_`>-]/g, '');
+        return { error: '', output: cleaned.trim(), rows: [] };
       }
 
       if (kind === 'world-cup-2026-countdown') {
@@ -1062,6 +1150,23 @@ export default function UtilityToolClient({ kind }: { kind: UtilityKind }) {
 
           {kind === 'hash-generator' ? <button type="button" onClick={generateHashes} className="rounded-md border px-2 py-1 text-xs">Generate Hashes</button> : null}
           {kind === 'password-generator' || kind === 'random-string-generator' ? <input value={secondary} onChange={(event) => setSecondary(event.target.value)} placeholder="Length (default 16)" className="rounded-md border px-2 py-1 text-xs" /> : null}
+          {kind === 'prompt-template-generator' ? (
+            <select value={secondary || 'Coding'} onChange={(event) => setSecondary(event.target.value)} className="rounded-md border px-2 py-1 text-xs">
+              <option>Coding</option>
+              <option>SEO</option>
+              <option>Translation</option>
+              <option>Summarization</option>
+              <option>Product planning</option>
+              <option>Email writing</option>
+              <option>Data analysis</option>
+            </select>
+          ) : null}
+          {['ai-token-counter', 'prompt-formatter', 'prompt-template-generator', 'ai-system-prompt-builder', 'markdown-to-prompt', 'ai-text-cleaner'].includes(kind) ? (
+            <>
+              <button type="button" onClick={() => setInput('Example input for AI workflow optimization.')} className="rounded-md border px-2 py-1 text-xs">Example</button>
+              <button type="button" onClick={() => { setInput(''); setSecondary(''); }} className="rounded-md border px-2 py-1 text-xs">Clear</button>
+            </>
+          ) : null}
         </div>
 
         {kind === 'regex-tester' || kind === 'json-diff' || kind === 'json-compare' || kind === 'json-path-tester' ? (
