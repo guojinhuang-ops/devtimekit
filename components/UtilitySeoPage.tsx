@@ -5,6 +5,8 @@ import RelatedTools from '@/components/RelatedTools';
 import TableOfContents from '@/components/TableOfContents';
 import UtilityToolClient from '@/components/UtilityToolClient';
 import ToolEngagement from '@/components/ToolEngagement';
+import Link from 'next/link';
+import { guidePages } from '@/lib/guides';
 import {
   buildBreadcrumbJsonLd,
   buildFaqJsonLd,
@@ -14,6 +16,12 @@ import {
 import type { UtilityPage } from '@/lib/utility-pages';
 
 export default function UtilitySeoPage({ page }: { page: UtilityPage }) {
+  const relatedGuides = guidePages
+    .filter((guide) => {
+      const haystack = `${guide.title} ${guide.description}`.toLowerCase();
+      return page.keywords.some((keyword) => haystack.includes(keyword.toLowerCase().split(' ')[0]));
+    })
+    .slice(0, 3);
   const generatedFaq = [
     { q: `What does ${page.title} do?`, a: `${page.title} helps developers transform and validate values quickly in the browser.` },
     { q: `Is ${page.title} free to use?`, a: 'Yes. DevTimeKit tools are available for free browser-based usage.' },
@@ -173,6 +181,18 @@ export default function UtilitySeoPage({ page }: { page: UtilityPage }) {
       </div>
 
       <RelatedTools currentPath={page.path} />
+      <section className="card mt-8">
+        <h2 className="text-xl font-semibold">Related Guides</h2>
+        <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+          {(relatedGuides.length ? relatedGuides : guidePages.slice(0, 3)).map((guide) => (
+            <li key={guide.slug}>
+              <Link href={`/guides/${guide.slug}`} className="text-brand-700 hover:underline dark:text-brand-100">
+                {guide.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
       <ToolEngagement title={page.title} path={page.path} />
     </article>
   );

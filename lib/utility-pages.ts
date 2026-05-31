@@ -1,5 +1,6 @@
 import type { UtilityKind } from '@/components/UtilityToolClient';
 import { jsonUtilityPages } from '@/lib/json-utility-pages';
+import { programmaticUtilityPages } from '@/lib/programmatic-utility-pages';
 
 export type UtilityPage = {
   title: string;
@@ -789,7 +790,8 @@ export const utilityPages: Record<string, UtilityPage> = {
       }
     ]
   },
-  ...jsonUtilityPages
+  ...jsonUtilityPages,
+  ...programmaticUtilityPages
 };
 
 export const newUtilityPaths = Object.keys(utilityPages);
